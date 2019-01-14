@@ -46,7 +46,7 @@ Optionally, you can run "select_neural_network.bat" at any time, as long as the 
 
 https://github.com/WolframRhodium/Super-Resolution-Zoo
 
-To actually process images/video, click the "VapourSynth Editor.exe" shortcut. Some premade scripts are in the "CustomScripts" folder. If you want to just benchmark your GPU, open "NvidiaBenchmarkAuto.vpy," or "UniversalBenchmark.cpy" if you're on an AMD GPU or an IGP. Under the "Script" tab of VapourSynth Editor, hit "check script" to make sure everything works. You can preview the test video that's getting upscaled with "preview", or you can click "benchmark" to go straight to the test. 
+To run a script, click the "VapourSynth Editor.exe" shortcut. Some premade scripts are in the "CustomScripts" folder. If you want to just benchmark your GPU, open "NvidiaBenchmarkAuto.vpy," or "UniversalBenchmark.cpy" if you're on an AMD GPU or an IGP. Under the "Script" tab of VapourSynth Editor, hit "check script" to make sure everything works. You can preview the test video that's getting upscaled with "preview", or you can click "benchmark" to go straight to the test. 
 
 If you want to actually process images or video, open "ExampleAuto.vpy". To preview the processing, click "Preview" in the "Script" tab. Use the seek bar to seek to a part of the video you want to see, and then use the left and right arrow keys to switch between the original frame and the processed one. You can remove the "#" in front of lines to enable or disable different filters and try thier effects. Vapoursynth Editor has a tab that can encode videos using the script. The vapoursynth fatpack has some .bat file command line encoding examples, and I've provided one that Nvidia GPU encoding. 
 
