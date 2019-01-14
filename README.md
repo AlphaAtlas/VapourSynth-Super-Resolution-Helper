@@ -3,7 +3,7 @@ Some simple scripts that ease the setup and configuration of MXNet image process
 
 Installation Instructions:
 
-This guide will show you how to get a wide range of neural networks upscalers running on videos and images in no time. It’s only been tested on Windows 10 so far, but might work if you have Windows 7. Linux users will have to install the dependencies themself, for now. If you have an AMD or Intel GPU, only a single upscaler is included now, and you can skip basically all of this guide. Make sure to have 7zip or a similar archive manager installed beforehand. 
+This guide will show you how to get a wide range of neural networks upscalers running on videos and images in no time. It’s only been tested on Windows 10 so far, but might work if you have Windows 7. Linux users will have to install the dependencies themself, for now. If you have an AMD or Intel GPU, you can skip most of this guide and just run the Universal Benchmark. Make sure to have 7zip or a similar archive manager installed beforehand. 
 
 First, download the latest version of the Vapoursynth FATPACK from here: 
 
