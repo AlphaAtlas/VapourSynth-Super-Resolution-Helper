@@ -50,12 +50,19 @@ To actually process images/video, click the "VapourSynth Editor.exe" shortcut. S
 
 If you want to actually process images or video, open "ExampleAuto.vpy". To preview the processing, click "Preview" in the "Script" tab. Use the seek bar to seek to a part of the video you want to see, and then use the left and right arrow keys to switch between the original frame and the processed one. You can remove the "#" in front of lines to enable or disable different filters and try thier effects. Vapoursynth Editor has a tab that can encode videos using the script. The vapoursynth fatpack has some .bat file command line encoding examples, and I've provided one that Nvidia GPU encoding. 
 
+
+
 Known Issues:
 
 -ProSR isn't being parsed by "select_neural_network.bat" correctly, fix coming soon. 
 
+
+
 TODO:
- -Write more in the readme, and the todo list. 
+
+ -Write more in the readme, and the todo list. Format the readme.
+ 
+ -Give more credit where credit is due.
  
  -Add OpenCV upscalers that might work on AMD cards. See https://github.com/WolframRhodium/muvsfunc/tree/master/Collections/examples
  
