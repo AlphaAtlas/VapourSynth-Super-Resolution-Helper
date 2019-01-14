@@ -42,7 +42,7 @@ This is where the automation starts taking over. Double click "_install_and_upda
 
 Let it run, it'll take awhile to download everything. If you get any errors during the MXNet install, that probably means you didn't install CUDA or cuDNN correctly, or that you don't have a Nvidia GPU. Don't worry about the "chardetect.exe" warning. You can run this /bat file again at any time to update everything, or try failed installations again. 
 
-Optionally, you can run "install_and_update_everything.bat" at any time, as long as the scripts aren't open in an editor. Ecery .vpy script that ends in "Auto" will automatically be updated. MSRN is selected by default, but you can choose from any of the scripts in WolframRhodium's Super Resolution Zoo repo, and it'll automatically change the algorithm in the processing scripts. If you're interested in learning more about each algorithm, you can look through the "NeuralNetworks" folder, or poke through the repo here:
+Optionally, you can run "_select_neural_network.bat" at any time, as long as the scripts aren't open in an editor. Ecery .vpy script that ends in "Auto" will automatically be updated. MSRN is selected by default, but you can choose from any of the scripts in WolframRhodium's Super Resolution Zoo repo, and it'll automatically change the algorithm in the processing scripts. If you're interested in learning more about each algorithm, you can look through the "NeuralNetworks" folder, or poke through the repo here:
 
 https://github.com/WolframRhodium/Super-Resolution-Zoo
 
