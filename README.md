@@ -17,7 +17,8 @@ https://developer.nvidia.com/cuda-92-download-archive?target_os=Windows&target_a
 
 Do a custom install, wherever you want, and ONLY install everything under the “CUDA” checkbox, so it won’t try to overwrite your current drivers, as seen below:
 
-
+![Screenshot](CUDA1.jpg)
+![Screenshot](CUDA2.jpg)
 
 Next, give Nvidia an email address and download cuDNN for CUDA 9.2 from the link below. Don't get the version for 10.0, or any of the older CUDA versions, only 9.2. I cannot legally redistribute this file, you have to download it yourself. 
 
@@ -25,7 +26,7 @@ https://developer.nvidia.com/rdp/form/cudnn-download-survey
 
 Next, open or unzip the archive. Drag the 3 folders in the archive’s “cuda” folder to the “v9.2” folder in your Nvidia CUDA install location. By default, it’s at “%programfiles%\NVIDIA GPU Computing Toolkit\CUDA\v9.2” for me, but it might be in the hidden %programdata% folder instead. 
 
-
+![Screenshot](cuDNN.png)
 
 Or, alternatively, you can follow Nvidia’s instructions here, which tell you to do the same thing:
 
