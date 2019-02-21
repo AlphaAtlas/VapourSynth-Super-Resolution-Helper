@@ -1,7 +1,7 @@
 @cd VapourSynth64
 @echo Installing misc python modules...
 @python.exe -m pip install pyperclip --upgrade
-@echo Installing MXNet for CUDA 10/0
+@echo Installing MXNet for CUDA 10.0
 @python.exe -m pip install mxnet-cu100 --pre --upgrade
 @echo  
 @echo Testing MXnet..
