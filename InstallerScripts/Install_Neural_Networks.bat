@@ -1,5 +1,5 @@
-@set gitdir=PortableGit
-@set path=%gitdir%\cmd;%path%
+@set subdir=bin\PortableSub\bin
+@set path=%subdir%\cmd;%path%
 @if exist NeuralNetworks\ goto :Update else goto :Install
 
 :Install
