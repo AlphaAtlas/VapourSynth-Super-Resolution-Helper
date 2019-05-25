@@ -1,4 +1,5 @@
 @echo off
+if exist "../"
 if exist VapourSynth64Portable\ (
     echo Portable VapourSynth is already installed here!
     echo Please delete it or install somewhere else.
@@ -16,20 +17,21 @@ cls
 mkdir download_temp
 cd download_temp
 echo Fetching URL.
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/vs_mxnet_helper_helper/master/Latest_FATPack_URL', 'url.txt')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/Latest_FATPack_URL', 'url.txt')"
 set /p VSURL=<url.txt
 del url.txt
 echo Downloading a ~100MB archive from %VSURL%...
 powershell -Command "Import-Module BitsTransfer; Start-BitsTransfer %VSURL% fatpack.7z"
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/AlphaAtlas/vs_mxnet_helper/archive/master.zip', 'vs_mxnet_helper-master.zip')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/archive/master.zip', 'VapourSynth64Portable.zip')"
 echo Downloading 7zip...
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/AlphaAtlas/vs_mxnet_helper_helper/raw/master/7za.exe', '7za.exe')"
 echo Extracting portable Vapoursynth pack...
 7za.exe x fatpack.7z -o.. -aoa
-7za.exe x vs_mxnet_helper-master.zip 
+7za.exe x vs_mxnet_helper-master.zip
+rmdir /S /Q "../"
 robocopy vs_mxnet_helper-master ..\VapourSynth64Portable /e /MOV /XO
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/vs_mxnet_helper_helper/master/Git_URL', 'url.txt')"
-set /p GitURL=<url.txt
+set /p SVNURL=<url.txt
 del url.txt
 echo Downloading a ~100MB portable Git archive from %GitURL%...
 powershell -Command "(New-Object Net.WebClient).DownloadFile('%GitURL%', 'PortableGit.exe')"
