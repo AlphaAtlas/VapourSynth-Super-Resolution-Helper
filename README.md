@@ -1,1 +1,1 @@
-See this repo for instructions: https://github.com/AlphaAtlas/vs_mxnet_helper_helper
+Scripts under construction, read the WIP README at your own peril!
