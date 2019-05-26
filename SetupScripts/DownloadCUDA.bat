@@ -52,7 +52,7 @@ del urlc.txt
 echo Downloading ~200MB cuDNN archive...
 powershell -Command "Import-Module BitsTransfer; Start-BitsTransfer %URLC% cuDNN.tar.bz2"
 echo Installing CUDNN.
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/blob/master/Binaries/7za.exe?raw=true', '7za.exe')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/raw/master/bin/7za.exe', '7za.exe')"
 7za.exe x cuDNN.tar.bz2
 7za.exe x cuDNN.tar
 robocopy Library "%programfiles%\NVIDIA GPU Computing Toolkit\CUDA\v10.0" /e /MOV /XO

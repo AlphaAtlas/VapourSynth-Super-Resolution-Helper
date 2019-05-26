@@ -43,7 +43,6 @@ cd ..\VapourSynth64Portable\
 echo Cleaning up.
 rmdir /s /q "../download_temp"
 start /wait "Even More Installing" cmd /c _install_and_update_everything.bat
-Pause
 echo Compressing...
 compact /c /s * /i /q
 timeout 10
