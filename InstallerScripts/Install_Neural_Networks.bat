@@ -1,18 +1,11 @@
-@set subdir=bin\PortableSub\bin
-@set path=%subdir%\cmd;%path%
-@if exist NeuralNetworks\ goto :Update else goto :Install
-
+@echo off
+cls
+if exist NeuralNetworks\ goto :Update else goto :Install
 :Install
-@echo Downloading Neural Networks...
-@cls
-git clone https://github.com/WolframRhodium/Super-Resolution-Zoo.git NeuralNetworks
-@goto :eof
+echo Setting Up Neural Network Folders.
+echo Algorithms will be downloaded as needed by Generate_Script.py
+call "bin/PortableSub/bin/svn.exe" checkout --depth immediates https://github.com/WolframRhodium/Super-Resolution-Zoo/trunk NeuralNetworks
+goto:eof
 
 :Update
-@echo Updating Neural Networks...
-@cd NeuralNetworks
-@set gitdir="..\PortableGit"
-@set path=%gitdir%\cmd;%path%
-@git fetch origin
-@git reset --hard origin/master
-@git pull
+call "bin/PortableSub/bin/svn.exe" update --set-depth immediates  NeuralNetworks

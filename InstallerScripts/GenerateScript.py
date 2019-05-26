@@ -66,6 +66,8 @@ while True:
     if(os.path.isdir(os.path.join("NeuralNetworks", algorithm))):
         break
 s = """NeuralNetworks/""" + algorithm + """/**/info.md"""
+os.system(r'echo Downloading Neural Networks. This could take awhile...')
+os.system(r'call "bin/PortableSub/bin/svn.exe" update --set-depth infinity  NeuralNetworks/' + algorithm)
 filelist = glob.glob(s, recursive=True)
 
 
@@ -120,7 +122,7 @@ for files in filelist:
             print(str(choice) + ": " + s)
             argument = lines[i + 1]
             a = argument.split("dict(")
-            argument = "sr_args = dict(model_filename=r'../" + files.strip("info.md") + re.sub(" ?\([^)]+\)", "", s) + "', device_id=0," + a[1].strip("\n")
+            argument = "sr_args = dict(model_filename=r'../" + files.strip("info.md") + re.sub(r" ?\([^)]+\)", "", s) + "', device_id=0," + a[1].strip("\n")
             argarray.append(argument)
             choice = choice + 1
         i = i + 1
