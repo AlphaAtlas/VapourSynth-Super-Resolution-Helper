@@ -40,7 +40,8 @@ if "%version%" == "10.0" (
 )
 set /p URL=<url.txt
 del url.txt
-echo Downloading Nvidia CUDA archive from %URL%...
+echo Downloading Nvidia CUDA archive from:
+echo %URL%
 powershell -Command "Import-Module BitsTransfer; Start-BitsTransfer %URL% CUDA.exe"
 echo Installing CUDA...
 echo This won't touch your Nvidia graphics driver, make sure you update it or let Windows do it!
