@@ -1,6 +1,13 @@
 @echo off
 setlocal EnableDelayedExpansion
-echo Please give this console admin rights to install CUDA
+:choice
+set /P c=Do you want to download and install CUDA and cuDNN[Y/N]?
+if /I "%c%" EQU "Y" goto :install
+if /I "%c%" EQU "N" goto :eof
+goto :choice
+:install
+cls
+echo This console needs admin rights for the CUDA installer, and for moving cuDNN files. 
 :: BatchGotAdmin
 :-------------------------------------
 REM  --> Check for permissions
