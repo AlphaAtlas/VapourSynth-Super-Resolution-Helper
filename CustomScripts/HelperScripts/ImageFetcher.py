@@ -76,35 +76,6 @@ def GetClip(filelist, balpha, mis = False):
 				clip = core.std.Splice([clip, singleclip], mismatch = mis)
 		return clip, core.std.BlankClip(clip, length = clip.num_frames)
 
-
-
-
-
-#def saver(n, clip, ImageFolder, OutputFormat, filelist, iformat):
-	#Moves images from the output folder to a folder with the file structure and names of the original images
-	#This action needs to be delayed because the it takes time for the image writer to actually write an image. 
-	#As it turns out, the actual image writing lags behind imwri.Write, so this function doesn't work. 
-#	if (n >= 10):
-#		try: 
-#			shutil.move(ImageFolder + r"/../VapourSynth_Image_Buffer/image" + str(n-10) + "." + OutputFormat, ImageFolder + r"/../Processed_Images/" + remove_prefix(filelist[n-10], ImageFolder)[:-len(iformat)] + OutputFormat)
-#		except:
-#			print(ImageFolder + r"/../VapourSynth_Image_Buffer/image" + str(n-10) + "." + OutputFormat + " failed to copy!")
-#	if n == clip.num_frames-1:
-#		
-#		for x in range (n-9, n+1):
-#			if x >= 0:
-#				try: 
-#					if os.path.isfile(ImageFolder + r"/../VapourSynth_Image_Buffer/image" + str(x) + "." + OutputFormat):
-#						shutil.move(ImageFolder + r"/../VapourSynth_Image_Buffer/image" + str(x) + "." + OutputFormat, ImageFolder + r"/../Processed_Images/" + remove_prefix(filelist[x], ImageFolder)[:-len(iformat)] + OutputFormat)
-#					else:
-#						leftovers.append(ImageFolder + r"/../VapourSynth_Image_Buffer/image" + str(x) + "." + OutputFormat)
-#						leftoverdest.append(ImageFolder + r"/../Processed_Images/" + remove_prefix(filelist[x], ImageFolder)[:-len(iformat)] + OutputFormat)
-#
-#				except FileNotFoundError:
-#					os.system('start cmd.exe /k "echo ' + 'error' + '"')
-#					print(ImageFolder + r"/../VapourSynth_Image_Buffer/image" + str(x) + "." + OutputFormat + " failed to copy!")
-#	return clip
-
 def Writer(clip, iformat, oformat, ifolder, filelist, comp = "DXT5", alpha = False, q = 100, alphaclip = None, ):
 	#Writes images to an output folder. Upscales the alpha channel if necessary. 
 	if alpha == True:
