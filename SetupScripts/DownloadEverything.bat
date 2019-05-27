@@ -3,8 +3,8 @@
 echo Don't click on .bat files you don't trust!
 echo.
 echo This .bat file will download scripts from https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper
-echo Which, in turn, will install Nvidia CUDA related files and download archives from other sources
-echo Make sure you have a couple of Gigabytes free on C: and in this directory before continuing.
+echo Which, in turn, will install Nvidia CUDA related files and download archives from other sources.
+echo Make sure you have a couple of GB free on C: and in this directory before continuing.
 echo.
 pause
 cls

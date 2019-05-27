@@ -51,7 +51,8 @@ echo Downloading Nvidia CUDA archive from:
 echo %URL%
 powershell -Command "Import-Module BitsTransfer; Start-BitsTransfer %URL% CUDA.exe"
 echo Installing CUDA...
-echo This won't touch your Nvidia graphics driver, make sure you update it or let Windows do it!
+echo This could take awhile. 
+echo CUDA won't touch your Nvidia graphics driver, make sure you update it or let Windows do it!
 start /I /WAIT /B CUDA.exe -s nvcc_10.0 cuobjdump_10.0 nvprune_10.0 cupti_10.0 gpu_library_advisor_10.0 memcheck_10.0 nvdisasm_10.0 nvprof_10.0 visual_profiler_10.0 visual_studio_integration_10.0 demo_suite_10.0 documentation_10.0 cublas_10.0 cublas_dev_10.0 cudart_10.0 cufft_10.0 cufft_dev_10.0 curand_10.0 curand_dev_10.0 cusolver_10.0 cusolver_dev_10.0 cusparse_10.0 cusparse_dev_10.0 nvgraph_10.0 npp_10.0 npp_dev_10.0 nvrtc_10.0 nvrtc_dev_10.0 nvml_dev_10.0
 echo CUDA Installed! 
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/cuDNN_URL', 'urlc.txt')"
