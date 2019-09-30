@@ -5,12 +5,6 @@ if exist VapourSynth64Portable\ (
     pause
     goto :eof
 )
-for /f "usebackq delims== tokens=2" %%x in (`wmic logicaldisk where "DeviceID='%CD:~0,2%'" get FreeSpace /format:value`) do set FreeSpace=%%x
-if %FreeSpace:~0,-6% LEQ 12880 (
-    echo You need at least 12GB of free space!
-    timeout 10
-    goto :eof
-)
 rmdir /s /q download_temp
 cls
 mkdir download_temp
