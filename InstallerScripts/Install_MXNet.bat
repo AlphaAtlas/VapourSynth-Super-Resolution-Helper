@@ -1,7 +1,7 @@
 @echo off
 cd VapourSynth64
 echo Installing misc python modules...
-python.exe -m pip install pyperclip psutil --upgrade
+python.exe -m pip install pyperclip psutil Pillow --upgrade
 :CUDACheck
 for %%x in (nvcc.exe) do if not [%%~$PATH:x]==[] goto :CUDA
 echo No existing CUDA install detected!
