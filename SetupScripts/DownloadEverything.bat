@@ -2,27 +2,118 @@
 
 echo Don't click on .bat files you don't trust!
 echo.
+echo.
 echo This .bat file will download scripts from https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper
-echo Which, in turn, will install Nvidia CUDA related files and download archives from other sources.
-echo Make sure you have a couple of GB free on C: and in this directory before continuing.
+echo.
+echo Which, in turn, will install Nvidia CUDA related files and download archives from other sources, if applicable.
+echo. 
+echo Make sure you have a at least 10GB free in this directory, some free space on C: for CUDA and an internet connection before continuing!
+echo.
+
+:choice1
+set /P c=Do you want to continue[Y/N]?
+if /I "%c%" EQU "Y" goto :CheckFreeSpace
+if /I "%c%" EQU "N" goto :eof
+goto :choice1
+
+:CheckFreeSpace
+for /f "usebackq delims== tokens=2" %%x in (`wmic logicaldisk where "DeviceID='%CD:~0,2%'" get FreeSpace /format:value`) do set FreeSpace=%%x
+if %FreeSpace:~0,-6% LEQ 10000 (
+    echo You need at least 10GB of free space!
+    timeout 10
+    goto :eof
+)
+
+
+cls
+SETLOCAL ENABLEDELAYEDEXPANSION ENABLEEXTENSIONS
+SET count=1
+FOR /F "tokens=* USEBACKQ" %%F IN (`wmic path win32_VideoController get name`) DO (
+  SET var!count!=%%F
+  SET /a count=!count!+1
+)
+
+ECHO Currently Enabled Graphics Card: %var2%
+ECHO.%var2% | FIND /I "Intel">Nul && (GOTO IntelText)
+ECHO.%var2% | FIND /I "Nvidia">Nul && (GOTO NvidiaText)
+ECHO.%var2% | FIND /I "AMD">Nul && (GOTO AMDText)
+ECHO Error detecting graphics!
+PAUSE
+EXIT
+
+:IntelText
+cls
+echo Intel graphics detected: %var2%
+echo.
+echo If you're on a laptop or an iMac-style all-in-one computer,
+echo you should force enable your main Nvidia/AMD graphics card.
+echo.
+echo If you have no active dedicated graphics card,
+echo upscaling will be VERY slow. 
 echo.
 pause
+goto :CheckDriver
+
+:AMDText
 cls
-del DownloadCUDA.bat
-del DownloadVapoursynth.bat
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/SetupScripts/DownloadCUDA.bat', 'DownloadCUDA.bat')"
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/SetupScripts/DownloadVapoursynth.bat', 'DownloadVapoursynth.bat')"
-cls
-echo If you already have all the necessary CUDA and cuDNN dependancies installed, just close this and
-echo run the DownloadVapoursynth.bat file. Otherwise you should uninstall anything that says CUDA
-echo in the Windows Control Panel before continuing. You can also run the DownloadCUDA.bat file to
-echo just install/reinstall the Nvidia dependancies at any time.
+echo AMD graphics detected: : %var2%
 echo.
-:choice
-set /P c=Are you sure you want to continue[Y/N]?
-if /I "%c%" EQU "Y" goto :install
-if /I "%c%" EQU "N" goto :eof
-goto :choice
-:install
+echo MXNet upscaling will only run on the CPU, which is VERY slow.
+echo However, Waifu2X and GPU denoising will work fine, even on AMD integrated graphics.  
+echo. 
+echo If you just want to upscale videos with Waifu2X quickly,
+echo I recommend trying Dandere2x or Video2X:
+echo.
+echo https://github.com/aka-katto/dandere2x
+echo.
+echo https://github.com/k4yt3x/video2x
+echo.
+echo You could also try setting up VapourSynth and AMD ROCm on Linux.
+echo.
+pause
+goto :CheckDriver
+
+:NvidiaText
+cls
+echo Nvidia graphics detected and active: : %var2%
+timeout 3
+goto :CheckDriver
+
+:CheckDriver
+REM TODO: fix possibility of an ancient Nvidia chipset being present without a Nvidia graphics card.
+powershell -Command "Get-WmiObject Win32_PnPSignedDriver | select driverprovidername" | FIND /I "Nvidia">Nul && GOTO :CUDACheck)
+echo Nvidia graphics driver not found!
+echo Skipping CUDA install. 
+goto :VSCheck
+
+:CUDACheck
+for %%x in (nvcc.exe) do if not [%%~$PATH:x]==[] goto :CUDAWarning
+echo No existing CUDA install detected!
+goto :CUDAInstall
+
+:CUDAWarning
+echo Existing CUDA installation found.
+echo.
+echo Installing a new version of CUDA might overwrite your existing install.
+:choice2
+set /P c=Do you want to install CUDA anyway[Y/N]?
+if /I "%c%" EQU "Y" goto :CUDAInstall
+if /I "%c%" EQU "N" goto :VSCheck
+goto :choice2
+
+:CUDAInstall
+echo Downloading the CUDA/cuDNN installer script...
+del DownloadCUDA.bat
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/SetupScripts/DownloadCUDA.bat', 'DownloadCUDA.bat')"
 start "DownloadCUDA" cmd /c DownloadCUDA.bat
+goto :VSCheck
+
+:VSCheck
+echo.
+echo Downloading the Vapoursynth FatPack Installer...
+del DownloadVapoursynth.bat
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/SetupScripts/DownloadVapoursynth.bat', 'DownloadVapoursynth.bat')"
 start "DownloadVapoursynth" cmd /c DownloadVapoursynth.bat
+ENDLOCAL
+echo Installers launched! Please check the other open cmd windows. 
+PAUSE
