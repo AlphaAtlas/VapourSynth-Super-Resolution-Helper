@@ -105,7 +105,7 @@ goto :choice2
 echo Downloading the CUDA/cuDNN installer script...
 del DownloadCUDA.bat
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/SetupScripts/DownloadCUDA.bat', 'DownloadCUDA.bat')"
-start "DownloadCUDA" cmd /c DownloadCUDA.bat
+start /W "DownloadCUDA" cmd /c DownloadCUDA.bat
 goto :VSCheck
 
 :VSCheck
