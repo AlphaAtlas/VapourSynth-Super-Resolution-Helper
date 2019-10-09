@@ -8,4 +8,4 @@ call "bin/PortableSub/bin/svn.exe" checkout --depth immediates https://github.co
 goto:eof
 
 :Update
-call "bin/PortableSub/bin/svn.exe" update --set-depth immediates  NeuralNetworks
+call "bin/PortableSub/bin/svn.exe" update --set-depth immediates NeuralNetworks
