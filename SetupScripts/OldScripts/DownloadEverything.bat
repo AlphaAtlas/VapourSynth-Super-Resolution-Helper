@@ -47,16 +47,17 @@ echo Intel graphics detected: %var2%
 echo.
 echo If you're on a laptop or an iMac-style all-in-one computer,
 echo you should force enable your main Nvidia/AMD graphics card.
+echo 
 echo.
 echo If you have no active dedicated graphics card,
 echo upscaling will be VERY slow. 
 echo.
 pause
-goto :CheckDriver
+goto :VSCheck
 
 :AMDText
 cls
-echo AMD graphics detected: : %var2%
+echo AMD graphics detected: %var2%
 echo.
 echo MXNet upscaling will only run on the CPU, which is VERY slow.
 echo However, Waifu2X and GPU denoising will work fine, even on AMD integrated graphics.  
@@ -71,41 +72,12 @@ echo.
 echo You could also try setting up VapourSynth and AMD ROCm on Linux.
 echo.
 pause
-goto :CheckDriver
+goto :VSCheck
 
 :NvidiaText
 cls
-echo Nvidia graphics detected and active: : %var2%
-timeout 3
-goto :CheckDriver
-
-:CheckDriver
-REM TODO: fix possibility of an ancient Nvidia chipset being present without a Nvidia graphics card.
-powershell -Command "Get-WmiObject Win32_PnPSignedDriver | select driverprovidername" | FIND /I "Nvidia">Nul && GOTO :CUDACheck)
-echo Nvidia graphics driver not found!
-echo Skipping CUDA install. 
-goto :VSCheck
-
-:CUDACheck
-for %%x in (nvcc.exe) do if not [%%~$PATH:x]==[] goto :CUDAWarning
-echo No existing CUDA install detected!
-goto :CUDAInstall
-
-:CUDAWarning
-echo Existing CUDA installation found.
-echo.
-echo Installing a new version of CUDA might overwrite your existing install.
-:choice2
-set /P c=Do you want to install CUDA anyway[Y/N]?
-if /I "%c%" EQU "Y" goto :CUDAInstall
-if /I "%c%" EQU "N" goto :VSCheck
-goto :choice2
-
-:CUDAInstall
-echo Downloading the CUDA/cuDNN installer script...
-del DownloadCUDA.bat
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/SetupScripts/DownloadCUDA.bat', 'DownloadCUDA.bat')"
-start /W "DownloadCUDA" cmd /c DownloadCUDA.bat
+echo Nvidia graphics detected and active: %var2%
+timeout 5
 goto :VSCheck
 
 :VSCheck
@@ -116,4 +88,4 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.github
 start "DownloadVapoursynth" cmd /c DownloadVapoursynth.bat
 ENDLOCAL
 echo Installers launched! Please check the other open cmd windows. 
-PAUSE
+timeout 10

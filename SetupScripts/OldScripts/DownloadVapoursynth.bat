@@ -17,6 +17,8 @@ echo Downloading a ~100MB archive from
 echo %VSURL%
 echo ...
 powershell -Command "(New-Object Net.WebClient).DownloadFile('%VSURL%', 'fatpack.7z')"
+echo Downloading a small repo archive from
+echo https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/archive/master.zip', 'GitHubArchive.zip')"
 echo Downloading 7zip...
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/raw/master/bin/7za.exe', '7za.exe')"
@@ -29,9 +31,11 @@ robocopy VapourSynth-Super-Resolution-Helper-master ..\VapourSynth64Portable /e 
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/SVN_URL', 'url.txt')"
 set /p SVNURL=<url.txt
 del url.txt
-echo Downloading a portable SVN archive from %SVNURL%...
+echo Downloading a portable SubVersion archive from 
+echo %SVNURL%
+echo ...
 powershell -Command "(New-Object Net.WebClient).DownloadFile('%SVNURL%', 'Subversion.zip')"
-echo Extracting Subversion...
+echo Extracting SubVersion...
 7za.exe x Subversion.zip -o"..\VapourSynth64Portable\bin\PortableSub" -aoa
 cd ..\VapourSynth64Portable\
 echo Cleaning up.
