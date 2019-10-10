@@ -101,4 +101,4 @@ if __name__ == "__main__":
         shutil.rmtree(os.path.join(t.gettempdir(), "VapourSynth-Super-Resolution-Helper-master/URLs"), ignore_errors = False)
         shutil.rmtree(os.path.join(t.gettempdir(), "VapourSynth-Super-Resolution-Helper-master/SetupScripts"), ignore_errors = False)
         shutil.move(os.path.join(t.gettempdir(), "VapourSynth-Super-Resolution-Helper-master"), os.path.join(cwd, "VapourSynth64Portable"))
-    subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/VapoursynthScripts/HelperScripts/SetupScripts.py" "-m" ])
+    subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/VapourSynthScripts/HelperScripts/SetupScripts.py" "-m" ])
