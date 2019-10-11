@@ -1,5 +1,4 @@
 import os, json, zipfile, io, urllib.request, shutil, glob, subprocess, sys, time, importlib, threading, tempfile
-from pySmartDL import SmartDL
 from urllib.parse import urlparse
 from .InstallCUDA import check_cuda, check_cudnn
 
@@ -16,32 +15,54 @@ def get_set_root():
     os.chdir(p)
     return p
 
-def check_existing_download(durl, size=None):
+def check_existing_download(durl):
+    size = 0
+    try: 
+        size = pySmartDL.utils.get_filesize(durl)
+    except:
+        print("Error getting size of " + durl)
     urlfile = os.path.basename(urlparse(durl)[2])
-    s = os.path.join([os.getenv("TEMP"), "/pySmartDL/", urlfile])
+    s = os.path.join(os.getenv("TEMP"), "pySmartDL", urlfile)
     if os.path.isfile(s):
-        if size is not None: 
+        if size is not 0:
             if (os.stat(s).st_size == size):
                 print("Existing file with matching size found! Skipping download...")
                 return s
+        os.remove(s)
     return None
 
-#todo: checksum? more retries?
-def download(dlurl, retry = True):
-    with SmartDL(dlurl) as dlobj:
-        s = dlobj.get_final_filesize()
-        c = check_existing_download(dlurl, size=s)  
-        if c is not None:
-            return c
-        dlobj.start()
-        dlobj.wait()
-        if (not dlobj.isSuccessful()) or (os.stat(dlobj.get_dest()).st_size != s):
-            if retry == True:
-                print("Download failed. Trying again...")
-                return download(dlurl, retry = False) 
-            else:
-                raise Exception("Download from " + dlurl + "failed!")
+def backupdownload(dlurl):
+    #Some URLs just always fail on certain systems with Python and BITS, yet work fine from a browser.
+    #I don't know why...
+    #Fine. We can shell out to powershell (which seems to work for some reason)
+    urlfile = os.path.basename(urlparse(dlurl)[2])
+    filepath = os.path.join(os.getenv("TEMP"), "pySmartDL", urlfile)
+    folderpath = os.path.join(os.getenv("TEMP"), "pySmartDL")
+    cwd = os.getcwd()
+    if not os.path.isdir(folderpath):
+        os.mkdir(folderpath)
+    if os.path.isfile(filepath):
+        os.remove(filepath)
+    os.chdir(folderpath)
+    #   *Holds Breath*
+    s = r"""-Command "(New-Object Net.WebClient).DownloadFile('""" + dlurl + r"""', '""" + filepath + r'''')"'''
+    subprocess.run("powershell.exe " + s, shell = True, check=True)
+    os.chdir(cwd)
+    return filepath
+
+
+def download(dlurl):
+    check = check_existing_download(dlurl)
+    if check is not None:
+        return check
+    try:
+        dlobj = pySmartDL.SmartDL(dlurl, timeout = 20)
+        dlobj.start(blocking=True)
         return dlobj.get_dest()
+    except:
+        print("Download failed! Trying backup method...")
+        return backupdownload(dlurl)
+
 
 def get_latest_release_github(url):
     #tries to automatically get the latest github release
@@ -123,6 +144,7 @@ def install_mxnet():
 if __name__ == "__main__":
     root = get_set_root()
     install_python_modules()
+    import pySmartDL
 #    t = threading.Thread(target=install_neural_networks)
 #    t.start()
 #    t2 = threading.Thread(target=download_mx_plugin)

@@ -6,8 +6,6 @@ faturlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Reso
 zipurl = "https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/raw/master/bin/7za.exe"
 helperurl = "https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/archive/master.zip"
 svnurlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/SVN_URL"
-useragent = {"headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0"}}
-
 #https://lukelogbook.tech/2018/01/25/merging-two-folders-in-python/
 #recursively merge two folders including subfolders
 def mergefolders(root_src_dir, root_dst_dir):
@@ -41,7 +39,7 @@ def check_existing_download(durl):
 def backupdownload(dlurl):
     #Some URLs just always fail on certain systems with Python and BITS, yet work fine from a browser.
     #I don't know why...
-    #Fine. We can shell out to powershell and do a nasty download
+    #Fine. We can shell out to powershell (which seems to work for some reason)
     urlfile = os.path.basename(urlparse(dlurl)[2])
     filepath = os.path.join(os.getenv("TEMP"), "pySmartDL", urlfile)
     folderpath = os.path.join(os.getenv("TEMP"), "pySmartDL")
@@ -52,7 +50,9 @@ def backupdownload(dlurl):
         os.remove(filepath)
     os.chdir(folderpath)
     #   *Holds Breath*
-    subprocess.run([r"""powershell -Command "(New-Object Net.WebClient).DownloadFile('""" + helperurl + r"""'', '""" + filepath + r'''')"'''], check=True)
+    s = r"""-Command "(New-Object Net.WebClient).DownloadFile('""" + dlurl + r"""', '""" + filepath + r'''')"'''
+    #raise Exception(s)
+    subprocess.run("powershell.exe " + s, shell = True, check=True)
     os.chdir(cwd)
     return filepath
 
@@ -79,7 +79,7 @@ def get_gpu_vendor():
     if "Nvidia" in line:
         os.system('cls')
         print("Nvidia graphics detected and active.")
-        print("As long as your graphics card isn't ancient, and your drivers are reasonably up to date, your GPU should accelerate MXNet processing.")
+        print("Your GPU should accelerate MXNet processing.")
         print(" ")
         input("Press ENTER to continue...")
         t[0] = True
@@ -92,8 +92,6 @@ def get_gpu_vendor():
         print("https://github.com/aka-katto/dandere2x")
         print("https://github.com/k4yt3x/video2x")
         print(" ")
-        print("Theoretically you could set up Vapoursynth and AMD ROCm on Linux, but good luck with that...")
-        print(" ")
         input("Press ENTER to continue...")
         t[1] = True
     if "Intel" in line:
@@ -101,6 +99,7 @@ def get_gpu_vendor():
         print("Intel graphics detected.")
         print("If you're on a laptop or an iMac-style all-in-one computer, you should force enable your main Nvidia/AMD graphics card.")
         print("If you have no active dedicated graphics card, upscaling will be CPU only and VERY slow.")
+        print("OpenCL filters may or may not run on your IGP, depending on how new it is.")
         print(" ")
         input("Press ENTER to continue...")
         t[2] = True
@@ -111,9 +110,10 @@ def get_gpu_vendor():
 if __name__ == "__main__":
     print(r"This exe will download scripts from https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper")
     print(r"Make sure you have a at least 10GB free in this directory, some free space on C: for CUDA and an internet connection before continuing!")
-    #c = input("Do you want to continue[Y/N]")
-    #if c.lower() != "y":
-    #    raise Exception("You didn't type y!")
+    print(" ")
+    c = input("Do you want to continue? [Y/N]")
+    if c.lower() != "y":
+        raise Exception("You didn't type Y!")
     #get free space
     cwd = os.getcwd()
     if shutil.disk_usage(cwd)[2] < 10000000000:
@@ -150,4 +150,4 @@ if __name__ == "__main__":
         os.rename(os.path.join(t, "VapourSynth-Super-Resolution-Helper-master"), os.path.join(t, "VapourSynth64Portable"))
         mergefolders(os.path.join(t, "VapourSynth64Portable"), os.path.join(cwd, "VapourSynth64Portable"))
     subprocess.run([zipexedir, "x", svnarchivedir, "-o" + "VapourSynth64Portable/bin/PortableSub"], check=True, shell=True)
-    #subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/VapourSynthScripts/HelperScripts/SetupScripts.py" "-m" ])
+    subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/VapourSynthScripts/HelperScripts/SetupScripts.py" "-m" ])

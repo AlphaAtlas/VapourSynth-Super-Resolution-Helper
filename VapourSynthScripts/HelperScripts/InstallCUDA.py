@@ -1,6 +1,6 @@
-import importlib, subprocess, os, sys, urllib.request, json, shutil, tempfile, tarfile
+import importlib, subprocess, os, sys, urllib.request, json, shutil, tempfile, tarfile, pySmartDL
 
-from .SetupScripts import get_set_root, check_existing_download, download
+from .SetupScripts import get_set_root, check_existing_download, download, backupdownload
 
 CUDAJSON = "https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/raw/master/URLs/CUDA_URL"
 
