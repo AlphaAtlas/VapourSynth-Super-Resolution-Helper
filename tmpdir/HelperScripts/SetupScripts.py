@@ -65,8 +65,8 @@ def download_mx_plugin():
     if os.path.isdir("MXNet"):
         shutil.rmtree("MXNet")
     with tempfile.TemporaryDirectory() as t:    
-        zipfile.ZipFile(d).extractall(path=t.gettempdir())
-        filelist = glob.glob(t.gettempdir() + "/temp/**/vs_mxnet.dll", recursive=True)
+        zipfile.ZipFile(d).extractall(path=t)
+        filelist = glob.glob(t + "/temp/**/vs_mxnet.dll", recursive=True)
         os.mkdir("MXNet")
         shutil.move(src=filelist[0], dst="MXNet")
 

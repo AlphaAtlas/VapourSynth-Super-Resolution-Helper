@@ -31,12 +31,11 @@ def install_cuda(ujson, cudver = "10.1"):
         raise Exception("CUDA installation failed!")
 
 def check_cudnn():
-    return os.path.isfile(os.path.join([os.environ("CUDA_PATH"), "/Library/bin/cudnn64_7.dll"]))
+    return os.path.isfile(os.path.join(os.environ("CUDA_PATH"), "Library/bin/cudnn64_7.dll"))
 
 def install_cudnn(cver, ujson):
     if (cver in ujson['cudnn']) and check_cuda():
         cudnnurl = ujson['cudnn'][cver]
-        #temp = tempfile.TemporaryDirectory()
         print ("Downloading cuDNN for " + cver)
         print("The archive should be in %TEMP%/pySmartDL/ if you need it")
         dnnobj = download(cudnnurl)
