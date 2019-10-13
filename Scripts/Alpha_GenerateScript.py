@@ -40,7 +40,8 @@ def list_columns(obj, cols=4, columnwise=True, gap=4):
         for p in plist])
     print(printer)
 
-
+#This script fetches arguments from WolframRhodium's Super-Resolution-Zoo repo,
+#And pulls just what you need to run them with SVN.
 #WIP. This was written when I didn't know much python or regex...
 os.chdir(os.path.join(os.path.dirname(sys.executable) , ".."))
 print("This will update all .vpy files in the CustomScripts folder that end in 'Auto'.")
@@ -134,10 +135,10 @@ while True:
     if (int(model) >= 0) and (int(model) <= choice) and model.isdigit():
         s = argarray[int(model)]
         pyperclip.copy(s)
-        filelist = glob.glob('CustomScripts/*Auto.vpy')
+        filelist = glob.glob('VapourSynthScripts/*Auto.vpy')
         for files in filelist:
             for line in fileinput.input(files, inplace=True):
-                if line.startswith("sr_args"):
+                if line.startswith("sr_args_auto"):
                     print(s)
                 else:
                     print(line.strip("\n"))

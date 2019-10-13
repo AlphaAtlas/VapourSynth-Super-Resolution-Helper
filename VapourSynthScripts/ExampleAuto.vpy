@@ -1,6 +1,6 @@
 import vapoursynth as vs
 core = vs.get_core()
-core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
+#core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
 import mvsfunc as mvf
 import muvsfunc as muf
 import havsfunc as hav
@@ -11,23 +11,10 @@ import havsfunc as hav
 #Argument for the neural network. run "_Select_Neural_Network_.bat" to change this automatically!
 sr_args = dict(model_filename=r'../NeuralNetworks/MSRN\MSRN_2x', device_id=0,up_scale=2, is_rgb_model=True, pad=None, crop=None, pre_upscale=False)
 
-
-#Wrapper for super_resolution, which itself is a wrapper for vs_mxnet, which is a interface for mxnet. Checks if the model is an RGB or grayscale one. 
-def NeuralNet(clip):
-	if (bool(sr_args["is_rgb_model"])):
-		clip = mvf.Depth(clip, depth=32)
-		clip = muf.super_resolution(clip, **sr_args)
-	else:
-		Yclip = core.fmtc.bitdepth(core.std.ShufflePlanes(clip, planes=0, colorfamily=vs.GRAY), bits=32)
-		Uclip = core.fmtc.bitdepth(core.std.ShufflePlanes(clip, planes=1, colorfamily=vs.GRAY), bits=32)
-		Vclip = core.fmtc.bitdepth(core.std.ShufflePlanes(clip, planes=2, colorfamily=vs.GRAY), bits=32)
-		Yclip = muf.super_resolution(Yclip, **sr_args)
-		Uclip = muf.super_resolution(Uclip, **sr_args)
-		Vclip = muf.super_resolution(Vclip, **sr_args)
-		clip = core.std.ShufflePlanes(clips=[Yclip, Uclip, Vclip], planes=[0, 0, 0], colorfamily=vs.YUV)
-	return clip
-
-
+#change super resolution arguments here!
+manual_sr_args = sr_args
+manual_sr_args['block_w']=64
+manual_sr_args['block_h']=64
 
 
 #Change the path to the video you're working with!
@@ -47,8 +34,18 @@ source = clip
 #h is the denoising strength, d sets the number of previous/next frames to look at (temporal noise), a is the search radius (spatial noise)
 #core.knlm.KNLMeansCL(clip = core.fmtc.bitdepth(clip, bits=16), d=2, a=2, h=0.8)
 
-#Process the image with a pretrained neural network
-clip = NeuralNet(clip)
+#Double the size of a clip
+#clip = core.resize.Spline36(clip, width=clip.width *2, height = clip.height * 2)
+	
+#Resample an image to 32 bits. This is the bit depth muf.super_resoltuon needs
+#Note that some models aren't RGB models, and each plane might need to be upscaled individually. 
+#clip = mvs.Depth(clip, depth=32)
+	
+#Neural network super resolution function	
+#clip = muf.super_resolution(clip, **manual_sr_args)	
+	
+#Interesting OpenCV detail enhancement function
+clip = avsfunc.OpenCV_Detail(clip, strength = 50)
 
 #Interleave the source and processed clip for easy comparison. Comment this out for processing
 clip = mvf.Preview(clips=[core.text.Text(clip, "Processed"), core.text.Text(source, "Source")])

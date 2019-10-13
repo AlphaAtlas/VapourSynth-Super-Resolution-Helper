@@ -2,7 +2,7 @@ import vapoursynth as vs
 import mvsfunc as mvf
 core = vs.get_core()
 
-
+#input clip to benchmark
 clip = core.ffms2.Source(r"../CustomScripts/Samples/isssmall.mkv")
 clip = core.fmtc.bitdepth(clip, bits=32)
 clip2 = core.w2xc.Waifu2x(clip, noise = 1, photo=True)

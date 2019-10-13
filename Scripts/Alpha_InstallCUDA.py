@@ -11,7 +11,7 @@ cuda_args = ['nvcc', 'cuobjdump', "nvprune", "cupti", "gpu_library_advisor", "me
 
 #This script needs to relaunch itself with elevated privledges, so it has to be a seperate file.
 
-def install_mxnet_cupy_gpu():
+def install_mxnet_gpu():
     #Installs the appropriate version of mxnet with pip
     root = get_set_root()
     cudafull = get_cuda_ver()
