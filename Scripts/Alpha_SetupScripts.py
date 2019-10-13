@@ -5,15 +5,19 @@ from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudn
 
 mxurl = "https://api.github.com/repos/kice/vs_mxnet/releases/latest"
 
-pipmodules = ["pyperclip", "Pillow", "elevate", "pySmartDL"]
+pipmodules = ["pyperclip", "Pillow", "pySmartDL", "numpy" "opencv-python"]
 
 modelurl = "https://github.com/WolframRhodium/Super-Resolution-Zoo/trunk"
 
 svnurlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/SVN_URL"
 
-cpumodule = "mxnet"
+cpumxmodule = "mxnet"
 
-gpumodule = "mxnet-cu101mkl"
+def install_mxnet(gpuvendor = [False, False, False]):
+    #Installs the appropriate version of mxnet with pip
+    root = get_set_root()
+    if not gpuvendor[0]:
+        subprocess.run([sys.executable, "-m", "pip", "install", cpumxmodule, "--upgrade"], shell=True, check=True)
 
 #TODO: Use pySmartDL JSON fetcher instead
 def get_latest_release_github(url):
@@ -72,16 +76,6 @@ def install_python_modules():
     #Pip!
     root = get_set_root()
     subprocess.run([sys.executable, "-m", "pip", "install"] + pipmodules + ["--upgrade"], shell=True, check=True)
-
-def install_mxnet(gpuvendor = [False, False, False]):
-    #Installs the appropriate version of mxnet with pip
-    root = get_set_root()
-    module = ""
-    if gpuvendor[0]:
-        module = gpumodule
-    else:
-        module = cpumodule
-    subprocess.run([sys.executable, "-m", "pip", "install", module, "--upgrade"], shell=True, check=True)
 
 #TODO: Thread Updates
 if __name__ == "__main__":

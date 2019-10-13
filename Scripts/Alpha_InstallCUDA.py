@@ -11,6 +11,30 @@ cuda_args = ['nvcc', 'cuobjdump', "nvprune", "cupti", "gpu_library_advisor", "me
 
 #This script needs to relaunch itself with elevated privledges, so it has to be a seperate file.
 
+def install_mxnet_cupy_gpu():
+    #Installs the appropriate version of mxnet with pip
+    root = get_set_root()
+    cudafull = get_cuda_ver()
+    cudastr = cudafull.replace(".", "")
+    mxmodule = "mxnet-cu" + cudastr
+    cumodule = "cupy-cuda" + cudastr
+    try: 
+        subprocess.run([sys.executable, "-m", "pip", "install", mxmodule, "--upgrade"], shell=True, check=True)
+    except:
+        print("ERROR: mxnet module for CUDA " + cudafull + "is not availible!")
+        print("Please install an appropriate version of CUDA and rerun the update script, if you want MXNet processing")
+        print("")
+        input("Press ENTER to continue...")
+    try: 
+        subprocess.run([sys.executable, "-m", "pip", "install", cumodule, "--upgrade"], shell=True, check=True)
+    except:
+        print("ERROR: mxnet module for CUDA " + cudafull + "is not availible!")
+        print("Right now, this is onyl used for an experimental suberXBR filter")
+        print(" ")
+        input("Press ENTER to continue...")
+
+
+
 #https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
 def is_admin():
     try:
@@ -102,7 +126,7 @@ def install_cudnn(cver, ujson):
         if choice.lower() == 'yes':
             install_cuda(ujson)
             install_cudnn(cver, ujson)
-        
+    install_mxnet_cupy_gpu()
 
 
 #Check for, install, and verify CUDA and cuDNN
