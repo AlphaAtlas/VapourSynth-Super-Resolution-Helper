@@ -98,6 +98,5 @@ if __name__ == "__main__":
         #This script needs to relaunch itself for admin privledges
         #Hence it needs to be called as a subprocess
         cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
-        raise Exception(cudascriptpath)
-        subprocess.Popen([sys.executable, cudascriptpath, "-m"], creationflags=subprocess.CREATE_NEW_CONSOLE)
+        subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE)
     
