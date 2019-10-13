@@ -42,7 +42,7 @@ def list_columns(obj, cols=4, columnwise=True, gap=4):
 
 
 #WIP. This was written when I didn't know much python or regex...
-os.chdir(os.path.join(os.path.dirname(sys.executable()) , ".."))
+os.chdir(os.path.join(os.path.dirname(sys.executable) , ".."))
 print("This will update all .vpy files in the CustomScripts folder that end in 'Auto'.")
 print("Super resolution arguments will also be copied to your clipboard.\n")
 level1 = os.listdir("NeuralNetworks") 

@@ -1,4 +1,5 @@
 import os, sys
+import mxnet
 import mvsfunc as mvs
 import muvsfunc as muf
 #import vapoursynth as vs
