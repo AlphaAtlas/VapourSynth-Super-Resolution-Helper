@@ -31,7 +31,7 @@ def GetImageClip(sizeformatdict):
 	#An imwri.Read wrapper to handle alpha
 	#takes a single sizeformatdict created by getfiledict
 	if len(sizeformatdict) != 1:
-		raise Exception('the input dictionary should not have more than one entry')
+		raise Exception('The input dictionary should not have more than one entry.')
 	key, value = sizeformatdict.popitem()
 	if key[4]:		#alpha processing boolean
 		return core.imwri.Read(value, mismatch=False, alpha=True)
@@ -95,7 +95,7 @@ def ProcessImages(func, alphafunc, settingsdict, sizeformatdict, inputfolder, im
 				dummyclip = core.std.BlankClip(alphaclip, width = 4, height = 4)
 				dummyclip = core.std.BlankClip(clip, width = 4, height = 4)
 				return dummyclip
-			#Tons of logic is needed jsut to switch between outputs
+			#Lots of logic is needed just to switch between outputs
 			if showoriginal:
 				#Scale original clip to final clip size
 				origclip = core.resize.Point(origclip, clip.width, clip.height)
@@ -210,7 +210,8 @@ def GetFileDict(inputfolder, inputformat="PNG", filtermode = "filetype", inputim
 #		os.makedirs(inputfolder + r"/../VapourSynth_Processing/Processed_Images/" + remove_prefix(dir, inputfolder), exist_ok = True)
 	sizeformatdict = dict()
 	alphamodes = ("RGBA", "LA", "PA", "RGBa", "La")
-	#Threading and Multiprocessing seemingly crashes VSEdit, may investigate later
+	#TODO: Thread the Pillow image reader
+	#Note: multiprocessing seemingly crashes VSEdit. Maybe I was just doing it wrong...
 	for imagedir in rawlist:
 		width = 0
 		height = 0

@@ -1,6 +1,6 @@
 import os, json, zipfile, io, urllib.request, shutil, glob, subprocess, sys, time, importlib, threading, tempfile
 from urllib.parse import urlparse
-from Alpha_SharedFunctions import get_set_root, check_existing_download, download, backupdownload, check_cuda, check_cudnn, get_gpu_vendor, compact
+from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudnn, get_gpu_vendor, compact
 
 
 mxurl = "https://api.github.com/repos/kice/vs_mxnet/releases/latest"
@@ -20,6 +20,7 @@ def get_latest_release_github(url):
     #tries to automatically get the latest github release from a repo 
     attempt = 0 
     error = "unknown"
+    urlstuff = ""
     while attempt <= 3:
         attempt = attempt + 1
         with urllib.request.urlopen(url) as urlstuff:
@@ -59,6 +60,7 @@ def install_svn():
 
 def install_neural_networks():
     #Sets up Neural Networks folder
+    #Another script will use SVN to selectively pull stuff as needed. 
     root = get_set_root()
     if os.path.isdir(os.path.join(root, "../NeuralNetworks")):
         s = subprocess.run([os.path.join(root, "../bin/PortableSub/bin/svn.exe"), "update", "--set-depth", "immediates", os.path.join(root, "../NeuralNetworks")], check=True, shell=True)
@@ -71,7 +73,7 @@ def install_python_modules():
     root = get_set_root()
     subprocess.run([sys.executable, "-m", "pip", "install"] + pipmodules + ["--upgrade"], shell=True, check=True)
 
-def install_mxnet():
+def install_mxnet(gpuvendor = [False, False, False]):
     #Installs the appropriate version of mxnet with pip
     root = get_set_root()
     module = ""
@@ -89,11 +91,13 @@ if __name__ == "__main__":
     install_svn()
     install_neural_networks()
     download_mx_plugin()
+    install_mxnet(get_gpu_vendor())
     root = get_set_root()
     compact(os.path.join(root, ".."))
-    if get_gpu_vendor()[0] == True:
+    if get_gpu_vendor()[1] == True:
         #This script needs to relaunch itself for admin privledges
         #Hence it needs to be called as a subprocess
-        cudascriptpath = "../HelperScripts/InstallCUDA.py"
-        subprocess.run([sys.executable, "-m", "../HelperScripts/InstallCUDA.py"], shell=True, check=True)
+        cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
+        raise Exception(cudascriptpath)
+        subprocess.Popen([sys.executable, cudascriptpath, "-m"], creationflags=subprocess.CREATE_NEW_CONSOLE)
     

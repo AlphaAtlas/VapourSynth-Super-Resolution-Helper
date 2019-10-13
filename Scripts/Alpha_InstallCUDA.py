@@ -1,54 +1,101 @@
-from .DownloadFunctions import get_set_root, download
-import importlib, subprocess, os, sys, urllib.request, json, shutil, tempfile, tarfile, pySmartDL
 
-from Alpha_SharedFunctions import check_cuda, check_cudnn, compact
+import subprocess, os, sys, json, shutil, tempfile, tarfile, ctypes
+from Alpha_SharedFunctions import get_set_root, check_cuda, check_cudnn, compact, download
+import traceback
 
-CUDAJSON = "https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/raw/master/URLs/CUDA_URL"
+
+CUDAJSON = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/CUDA_URL.json"
 
 #TODO: remove modules that aren't needed
-cuda_args = ['-s', 'nvcc', 'cuobjdump', "nvprune", "cupti", "gpu_library_advisor", "memcheck", "nvdisasm", "nvprof", "visual_profiler", "visual_studio_integration"," demo_suite", "documentation", "cublas", "cublas_dev", "cudart", "cufft", "cufft_dev", "curand", "curand_dev", "cusolver", "cusolver_dev", "cusparse", "cusparse_dev", "nvgraph", "npp", "npp_dev", "nvrtc", "nvrtc_dev", "nvml_dev"]
+cuda_args = ['nvcc', 'cuobjdump', "nvprune", "cupti", "gpu_library_advisor", "memcheck", "nvdisasm", "nvprof", "visual_profiler", "visual_studio_integration"," demo_suite", "documentation", "cublas", "cublas_dev", "cudart", "cufft", "cufft_dev", "curand", "curand_dev", "cusolver", "cusolver_dev", "cusparse", "cusparse_dev", "nvgraph", "npp", "npp_dev", "nvrtc", "nvrtc_dev", "nvml_dev"]
 
 #This script needs to relaunch itself with elevated privledges, so it has to be a seperate file.
 
+#https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+#https://gist.github.com/GaryLee/d1cf2089c3a515691919
+def run_as_admin(argv=None, debug=False):
+    shell32 = ctypes.windll.shell32
+    if argv is None and shell32.IsUserAnAdmin():
+        return True
+        
+    if argv is None:
+        argv = sys.argv
+    if hasattr(sys, '_MEIPASS'):
+        # Support pyinstaller wrapped program.
+        arguments = map(str, argv[1:])
+    else:
+        arguments = map(str, argv)
+    argument_line = u' '.join(arguments)
+    executable = str(sys.executable)
+    if debug:
+        print('Command line: ', executable, argument_line)
+    ret = shell32.ShellExecuteW(None, u"runas", executable, argument_line, None, 1)
+    if int(ret) <= 32:
+        return False
+    return None
+
+def get_cuda_ver():
+    CUDAVersion = None
+    try: 
+        CUDAVersion = str(os.path.basename(os.getenv("CUDA_PATH")))[1:]
+    except:
+        raise Exception("CUDA is not on PATH. It might be installed incorrectly!")
+    if CUDAVersion is None:
+        raise Exception("Error getting CUDA version")
+    return CUDAVersion
 
 def install_cuda(ujson, cudver = "10.1"):
     #Installs the appropriate version of CUDA silently
     #Might overwrite existing installs???
-    cuda_string = "-s "
+    cuda_strings = ["-s"]
     for s in cuda_args:
-        cuda_string = cuda_string + "_" + cudver + " "
+        cuda_strings.append("_" + cudver)
     cuurl = None
-    if sys.getwindowsversion() == 10:
+    if str(sys.getwindowsversion()) == '10':
         cuurl = ujson['CUDAWin10']
     else:
         print("WARNING: Versions of Windows older than Windows 10 aren't tested.")
+        print(" ")
         cuurl = ujson['CUDAWin']
-    print ("Downloading the online CUDA installer.")   
-    cuobj = download(cuurl)
-    print(r"""It should be in %TEMP%/pySmartDL/ if you need it.""") 
+    print ("Downloading the online CUDA installer.")
+    print(" ")
+    cuobj = download(cuurl, reuse = True)
+    print(r"""The installer should be in %TEMP%/pySmartDL/ if you need it.""") 
     print(" ")
     print("Silently Installing CUDA. This could take awhile...")
-    s = subprocess.run([cuobj.get_dest(), cuda_string], check=True, shell=True)
-    if not check_cuda():
-        raise Exception("CUDA installation failed!")
+    print(" ")
+    #s = subprocess.run([cuobj.get_dest()] + [cuda_string], check=True, shell=True)
+    #if not check_cuda():
+    #    raise Exception("CUDA installation failed!")
     print("CUDA installation done.")
 
 def install_cudnn(cver, ujson):
     #Installs the appropriate version of cuDNN, using a json for reference
-    if (cver in ujson['cudnn']) and check_cuda():
+    if True:#if (cver in ujson['cudnn']) and check_cuda(): 
         cudnnurl = ujson['cudnn'][cver]
         print ("Downloading cuDNN for " + cver)
-        print("The archive should be in %TEMP%/pySmartDL/ if you need it")
-        dnnobj = download(cudnnurl)
-        tar = tarfile.open(dnnobj.get_dest(), "r:bz2")  
-        tar.extractall(os.path.normpath(os.environ("CUDA_PATH")))
+        print(" ")
+        dnndir = download(cudnnurl, reuse=True)
+        print(" ")
+        print("The archive should be in %TEMP%/pySmartDL/ if you need it.")
+        print(" ")
+        print("Extracting cuDNN...")
+        #TODO: Shell out to 7zip for faster decompressing.
+        tar = tarfile.open(dnndir, "r:bz2")  
+        tar.extractall(os.path.normpath(os.getenv("TEMP")))#tar.extractall(os.path.normpath(os.getenv("CUDA_PATH")))
         tar.close()
-        if not check_cudnn():
-            raise Exception("Error installing cuDNN!")
+        #if not check_cudnn():
+        #    raise Exception("Error installing cuDNN!")
         print('cuDNN installed!')
     else:
-        print("No appropriate version of cuDNN found for CUDA " + cver)
-        print("MXNet will NOT work without cuDNN, but other GPU filters should work fine")
+        print("No appropriate version of cuDNN found for CUDA " + cver + ".")
+        print("MXNet will NOT work without cuDNN, but other GPU filters should work fine.")
         print("Would you like to install the newest version of CUDA?")
         print("This could overwrite your default CUDA installation.")
         choice = input("Yes/No:")
@@ -60,33 +107,42 @@ def install_cudnn(cver, ujson):
 
 #Check for, install, and verify CUDA and cuDNN
 if __name__ == "__main__":
-    os.system('cls') 
-    print("Installing CUDA stuff!")
-    print("Please note that this Python script needs Admin privledges to access Program Files")
-    print(" ")
-    input("Press ENTER to continue...")
-    root = get_set_root()
-    if importlib.util.find_spec("spam") is None:
-        subprocess.call([sys.executable, "-m", "pip", "install", "elevate", "--upgrade"])
-    if importlib.util.find_spec("pySmartDL") is None:
-        subprocess.call([sys.executable, "-m", "pip", "install", "pySmartDL", "--upgrade"])
-    from elevate import elevate
-    elevate()
-    print("Python now has admin privledges!")
-    from pySmartDL import SmartDL
-    print("Fetching cuDNN version table from GitHub")
-    urljson = json.loads(urllib.request.urlopen(CUDAJSON).read().decode())
-    if check_cuda():
-        print("Existing CUDA installation detected!")
-        CUDAVersion = str(os.path.basename(os.environ("CUDA_PATH")))[1:]
-        if CUDAVersion is None:
-            raise Exception("Error getting CUDA version")
-        if check_cudnn():
-            print("cuDNN files found!")
-        else: 
-            install_cudnn(CUDAVersion, urljson)
-    else:
-        install_cuda()
-        install_cudnn()
-    print("Compressing CUDA directory in background...")
-    compact(os.path.join(os.environ(programfiles), "NVIDIA GPU Computing Toolkit"))
+    try:
+        ret = run_as_admin()
+        if ret is None:
+            #Documentations claims this is getting admin privledges
+            print("Getting admin rights...")
+        if ret is True:
+            #This branch only runs with admin privledges
+            root = get_set_root()
+            print("Installing CUDA stuff!")
+            print("Please note that this Python script needs Admin privledges to access CUDA/cuDNN in Program Files")
+            print(" ")
+            input("Press ENTER to continue...")
+            print(" ")
+            print("Fetching cuDNN version table from GitHub")
+            urljson = download(CUDAJSON, getjson=True)
+            print(' ')
+            if check_cuda():
+                print("Existing CUDA installation detected!")
+                cver = get_cuda_ver()
+                if check_cudnn():
+                    print("cuDNN files found!")
+                else: 
+                    install_cudnn(cver, urljson)
+            else:
+                #install_cuda(urljson)
+                #cver = get_cuda_ver()
+                install_cudnn("10.1", urljson)
+                print(" ")
+            print("Compressing CUDA directory in background...")
+            #compact(os.path.normpath(os.path.join(os.getenv("programfiles"), "NVIDIA GPU Computing Toolkit")))
+        else:
+            #But this also seems to be "getting admin privledges?"
+            pass
+    except Exception as e:
+        #Cant seem to write to stderr or stdout from the admin console
+        #And I don't know how to stop it from closing
+        #Fine... just catch ALL the exceptions and print them
+        traceback.print_exc()
+        input("Press ENTER to continue...")

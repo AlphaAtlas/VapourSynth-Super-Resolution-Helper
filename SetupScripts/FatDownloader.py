@@ -20,26 +20,40 @@ def mergefolders(root_src_dir, root_dst_dir):
                 os.remove(dst_file)
             shutil.copy(src_file, dst_dir)
 
-def check_existing_download(durl):
+def check_existing_download(durl, reuse=False):
+    #Checks if a download matching the url already exists, returns the path or None
     size = 0
     try: 
         size = pySmartDL.utils.get_filesize(durl)
     except:
-        print("Error getting size of " + durl)
+    #    print("Error getting size of " + durl)
+    #    print(" ")
+        pass
     urlfile = os.path.basename(urlparse(durl)[2])
     s = os.path.join(os.getenv("TEMP"), "pySmartDL", urlfile)
-    if os.path.isfile(s):
-        if size is not 0:
-            if (os.stat(s).st_size == size):
-                print("Existing file with matching size found! Skipping download...")
-                return s
+    b = os.path.isfile(s)
+    if (b) and (size is not 0):
+        if (os.stat(s).st_size == size):
+            print("Existing file with matching size found! Skipping download...")
+            print(" ")
+            return s
         os.remove(s)
+        return None
+    if b and reuse:
+        print("Target download found on disk, but it can't be verified!")
+        print("It might be an incomplete download, or it might be OK.")
+        print("Would you like to try and reuse the file anyway?")
+        print(" ")
+        i = input("Y/N: ")
+        if i.lower() == "y":
+            return s
     return None
 
+
 def backupdownload(dlurl):
-    #Some URLs just always fail on certain systems with Python and BITS, yet work fine from a browser.
+    #Some URLs just always fail on certain systems with Python and Windows BITS, yet work fine from a browser.
     #I don't know why...
-    #Fine. We can shell out to powershell (which seems to work for some reason)
+    #Fine. We can shell out to powershell (which seems to work for some reason (sometimes))
     urlfile = os.path.basename(urlparse(dlurl)[2])
     filepath = os.path.join(os.getenv("TEMP"), "pySmartDL", urlfile)
     folderpath = os.path.join(os.getenv("TEMP"), "pySmartDL")
@@ -51,23 +65,38 @@ def backupdownload(dlurl):
     os.chdir(folderpath)
     #   *Holds Breath*
     s = r"""-Command "(New-Object Net.WebClient).DownloadFile('""" + dlurl + r"""', '""" + filepath + r'''')"'''
-    #raise Exception(s)
     subprocess.run("powershell.exe " + s, shell = True, check=True)
     os.chdir(cwd)
     return filepath
 
 
-def download(dlurl):
-    check = check_existing_download(dlurl)
+def download(dlurl, getjson = False, reuse=False):
+    #Wrapper for pySmartDL
+    #Uses locally cached files if the size is correct
+    #Delete %TEMP%/pySmartDL if you get a corrupted download!
+    #Returns either a directory, or a json dict
+    try: 
+        import pySmartDL
+    except:
+        pass
+    check = check_existing_download(dlurl, reuse)
     if check is not None:
         return check
     try:
         dlobj = pySmartDL.SmartDL(dlurl, timeout = 20)
+        dlobj.fetch_hash_sums()
         dlobj.start(blocking=True)
-        return dlobj.get_dest()
+        if(getjson):
+            return dlobj.get_json()
+        else:
+            return dlobj.get_dest()
     except:
+        if(getjson):
+            raise Exception("Fetching JSON from" + dlurl + "failed!")
         print("Download failed! Trying backup method...")
+        print(" ")
         return backupdownload(dlurl)
+
 
 
 def get_gpu_vendor():
@@ -109,7 +138,7 @@ def get_gpu_vendor():
 
 if __name__ == "__main__":
     print(r"This exe will download scripts from https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper")
-    print(r"Make sure you have a at least 10GB free in this directory, some free space on C: for CUDA and an internet connection before continuing!")
+    print("Make sure you have a at least 10GB free in this directory, some free space on C: for CUDA and an internet connection before continuing!")
     print(" ")
     c = input("Do you want to continue? [Y/N]")
     if c.lower() != "y":
@@ -150,4 +179,4 @@ if __name__ == "__main__":
         os.rename(os.path.join(t, "VapourSynth-Super-Resolution-Helper-master"), os.path.join(t, "VapourSynth64Portable"))
         mergefolders(os.path.join(t, "VapourSynth64Portable"), os.path.join(cwd, "VapourSynth64Portable"))
     subprocess.run([zipexedir, "x", svnarchivedir, "-o" + "VapourSynth64Portable/bin/PortableSub"], check=True, shell=True)
-    subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/Scripts/SetupScripts.py", "-m" ])
+    subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/Scripts/Alpha_SetupScripts.py" "-m" ])
