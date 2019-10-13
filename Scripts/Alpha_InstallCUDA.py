@@ -145,4 +145,6 @@ if __name__ == "__main__":
         #And I don't know how to stop it from closing
         #Fine... just catch ALL the exceptions and print them
         traceback.print_exc()
+        with open("C:/error.txt", mode="a") as f:
+            traceback.print_exc(file=f)
         input("Press ENTER to continue...")
