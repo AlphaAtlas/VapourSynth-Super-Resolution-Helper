@@ -1,13 +1,10 @@
 import os, sys
-sys.path.append(os.getcwd() + "/HelperScripts")
-sys.path.append(os.getcwd() + "/../CustomScripts/HelperScripts")
-sys.path.append(os.getcwd() + "/CustomScripts/HelperScripts")
 import mvsfunc as mvs
 import muvsfunc as muf
 #import vapoursynth as vs
 from vapoursynth import core
 core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
-import ImageHelper as helper
+import Alpha_ImageHelper as helper
 settings = dict()
 try: nopreview
 except NameError: settings['nopreview'] = False
