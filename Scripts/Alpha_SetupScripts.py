@@ -94,7 +94,7 @@ if __name__ == "__main__":
     install_mxnet(get_gpu_vendor())
     root = get_set_root()
     compact(os.path.join(root, ".."))
-    if get_gpu_vendor()[1] == True:
+    if get_gpu_vendor()[0] == True:
         #This script needs to relaunch itself for admin privledges
         #Hence it needs to be called as a subprocess
         #cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))

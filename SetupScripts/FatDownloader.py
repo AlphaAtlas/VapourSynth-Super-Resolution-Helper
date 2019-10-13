@@ -1,5 +1,4 @@
 import os, sys, shutil, subprocess, urllib.request, tempfile, time
-from pprint import pprint
 from urllib.parse import urlparse
 import pySmartDL
 faturlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/FATPACK_URL"
