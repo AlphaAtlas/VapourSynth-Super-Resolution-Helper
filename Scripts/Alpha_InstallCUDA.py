@@ -17,7 +17,6 @@ def install_mxnet_cupy_gpu():
     cudafull = get_cuda_ver()
     cudastr = cudafull.replace(".", "")
     mxmodule = "mxnet-cu" + cudastr
-    cumodule = "cupy-cuda" + cudastr
     try: 
         subprocess.run([sys.executable, "-m", "pip", "install", mxmodule, "--upgrade"], shell=True, check=True)
     except:
@@ -25,15 +24,6 @@ def install_mxnet_cupy_gpu():
         print("Please install an appropriate version of CUDA and rerun the update script, if you want MXNet processing")
         print("")
         input("Press ENTER to continue...")
-    try: 
-        subprocess.run([sys.executable, "-m", "pip", "install", cumodule, "--upgrade"], shell=True, check=True)
-    except:
-        print("ERROR: mxnet module for CUDA " + cudafull + "is not availible!")
-        print("Right now, this is onyl used for an experimental suberXBR filter")
-        print(" ")
-        input("Press ENTER to continue...")
-
-
 
 #https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
 def is_admin():
