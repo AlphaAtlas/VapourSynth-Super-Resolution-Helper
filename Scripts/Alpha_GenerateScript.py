@@ -138,7 +138,7 @@ while True:
         filelist = glob.glob('VapourSynthScripts/*Auto.vpy')
         for files in filelist:
             for line in fileinput.input(files, inplace=True):
-                if line.startswith("sr_args_auto"):
+                if line.startswith("sr_args"):
                     print(s)
                 else:
                     print(line.strip("\n"))
