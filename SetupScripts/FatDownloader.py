@@ -179,4 +179,4 @@ if __name__ == "__main__":
         os.rename(os.path.join(t, "VapourSynth-Super-Resolution-Helper-master"), os.path.join(t, "VapourSynth64Portable"))
         mergefolders(os.path.join(t, "VapourSynth64Portable"), os.path.join(cwd, "VapourSynth64Portable"))
     subprocess.run([zipexedir, "x", svnarchivedir, "-o" + "VapourSynth64Portable/bin/PortableSub"], check=True, shell=True)
-    subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/Scripts/Alpha_SetupScripts.py" "-m" ])
+    subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/Scripts/Alpha_SetupScripts.py"], creationflags=subprocess.CREATE_NEW_CONSOLE)

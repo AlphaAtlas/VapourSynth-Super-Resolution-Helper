@@ -77,7 +77,7 @@ def install_mxnet(gpuvendor = [False, False, False]):
     #Installs the appropriate version of mxnet with pip
     root = get_set_root()
     module = ""
-    if check_cuda() and check_cudnn():
+    if gpuvendor[0]:
         module = gpumodule
     else:
         module = cpumodule
@@ -97,6 +97,8 @@ if __name__ == "__main__":
     if get_gpu_vendor()[1] == True:
         #This script needs to relaunch itself for admin privledges
         #Hence it needs to be called as a subprocess
-        cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
-        subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE)
-    
+        #cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
+        #subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE, shell=True, cwd=os.path.normpath(os.path.join(root, "../Scripts")))
+        #As it turns out, the script doesn't like popen. 
+        os.chdir(os.path.normpath(os.path.join(root, "../Scripts")))
+        os.system(r"""..\VapourSynth64\python.exe Alpha_InstallCUDA.py""")

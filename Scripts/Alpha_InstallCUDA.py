@@ -65,19 +65,19 @@ def install_cuda(ujson, cudver = "10.1"):
         cuurl = ujson['CUDAWin']
     print ("Downloading the online CUDA installer.")
     print(" ")
-    cuobj = download(cuurl, reuse = True)
+    cudir = download(cuurl, reuse = True)
     print(r"""The installer should be in %TEMP%/pySmartDL/ if you need it.""") 
     print(" ")
     print("Silently Installing CUDA. This could take awhile...")
     print(" ")
-    #s = subprocess.run([cuobj.get_dest()] + [cuda_string], check=True, shell=True)
-    #if not check_cuda():
-    #    raise Exception("CUDA installation failed!")
+    s = subprocess.run([cudir] + cuda_strings, check=True, shell=True)
+    if not check_cuda():
+        raise Exception("CUDA installation failed!")
     print("CUDA installation done.")
 
 def install_cudnn(cver, ujson):
     #Installs the appropriate version of cuDNN, using a json for reference
-    if True:#if (cver in ujson['cudnn']) and check_cuda(): 
+    if (cver in ujson['cudnn']) and check_cuda(): 
         cudnnurl = ujson['cudnn'][cver]
         print ("Downloading cuDNN for " + cver)
         print(" ")
@@ -88,10 +88,10 @@ def install_cudnn(cver, ujson):
         print("Extracting cuDNN...")
         #TODO: Shell out to 7zip for faster decompressing.
         tar = tarfile.open(dnndir, "r:bz2")  
-        tar.extractall(os.path.normpath(os.getenv("TEMP")))#tar.extractall(os.path.normpath(os.getenv("CUDA_PATH")))
+        tar.extractall(os.path.normpath(os.getenv("CUDA_PATH")))
         tar.close()
-        #if not check_cudnn():
-        #    raise Exception("Error installing cuDNN!")
+        if not check_cudnn():
+            raise Exception("Error installing cuDNN!")
         print('cuDNN installed!')
     else:
         print("No appropriate version of cuDNN found for CUDA " + cver + ".")
@@ -131,12 +131,12 @@ if __name__ == "__main__":
                 else: 
                     install_cudnn(cver, urljson)
             else:
-                #install_cuda(urljson)
-                #cver = get_cuda_ver()
-                install_cudnn("10.1", urljson)
+                install_cuda(urljson)
+                cver = get_cuda_ver()
+                install_cudnn(cver, urljson)
                 print(" ")
             print("Compressing CUDA directory in background...")
-            #compact(os.path.normpath(os.path.join(os.getenv("programfiles"), "NVIDIA GPU Computing Toolkit")))
+            compact(os.path.normpath(os.path.join(os.getenv("programfiles"), "NVIDIA GPU Computing Toolkit")))
         else:
             #But this also seems to be "getting admin privledges?"
             pass
@@ -145,6 +145,4 @@ if __name__ == "__main__":
         #And I don't know how to stop it from closing
         #Fine... just catch ALL the exceptions and print them
         traceback.print_exc()
-        with open("C:/error.txt", mode="a") as f:
-            traceback.print_exc(file=f)
         input("Press ENTER to continue...")
