@@ -92,11 +92,10 @@ if __name__ == "__main__":
         print("Would you like to install CUDA and cuDNN?")
         i = input("Y/N: ")
         if i.lower() == "y":
-            return 0
-        #This script needs to relaunch itself for admin privledges
-        #Hence it needs to be called as a subprocess
-        #cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
-        #subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE, shell=True, cwd=os.path.normpath(os.path.join(root, "../Scripts")))
-        #As it turns out, the script doesn't like popen. 
-        os.chdir(os.path.normpath(os.path.join(root, "../Scripts")))
-        os.system(r"""..\VapourSynth64\python.exe Alpha_InstallCUDA.py""")
+            #This script needs to relaunch itself for admin privledges
+            #Hence it needs to be called as a subprocess
+            #cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
+            #subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE, shell=True, cwd=os.path.normpath(os.path.join(root, "../Scripts")))
+            #As it turns out, the script doesn't like popen. 
+            os.chdir(os.path.normpath(os.path.join(root, "../Scripts")))
+            os.system(r"""..\VapourSynth64\python.exe Alpha_InstallCUDA.py""")
