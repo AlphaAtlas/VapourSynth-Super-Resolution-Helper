@@ -1,10 +1,10 @@
 import os, sys, shutil, subprocess, urllib.request, tempfile, time
 from urllib.parse import urlparse
 import pySmartDL
-faturlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/FATPACK_URL"
-zipurl = "https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/raw/master/bin/7za.exe"
+faturlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/develop/URLs/FATPACK_URL"
+zipurl = "https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/raw/develop/bin/7za.exe"
 helperurl = "https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/archive/develop.zip"
-svnurlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/master/URLs/SVN_URL"
+svnurlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/develop/URLs/SVN_URL"
 #https://lukelogbook.tech/2018/01/25/merging-two-folders-in-python/
 #recursively merge two folders including subfolders
 def mergefolders(root_src_dir, root_dst_dir):
@@ -173,9 +173,9 @@ if __name__ == "__main__":
     print("Extracting Super-Resolution Helper Stuff...")
     with tempfile.TemporaryDirectory() as t:
         subprocess.run([zipexedir, "x", helperarchivedir, "-o" + t], shell=True, check=True)
-        shutil.rmtree(os.path.join(t, "VapourSynth-Super-Resolution-Helper-master/URLs"), ignore_errors = False)
-        shutil.rmtree(os.path.join(t, "VapourSynth-Super-Resolution-Helper-master/SetupScripts"), ignore_errors = False)
-        os.rename(os.path.join(t, "VapourSynth-Super-Resolution-Helper-master"), os.path.join(t, "VapourSynth64Portable"))
+        shutil.rmtree(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop/URLs"), ignore_errors = False)
+        shutil.rmtree(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop/SetupScripts"), ignore_errors = False)
+        os.rename(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop"), os.path.join(t, "VapourSynth64Portable"))
         mergefolders(os.path.join(t, "VapourSynth64Portable"), os.path.join(cwd, "VapourSynth64Portable"))
     subprocess.run([zipexedir, "x", svnarchivedir, "-o" + "VapourSynth64Portable/bin/PortableSub"], check=True, shell=True)
     subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/Scripts/Alpha_SetupScripts.py"], creationflags=subprocess.CREATE_NEW_CONSOLE)
