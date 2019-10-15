@@ -1,6 +1,6 @@
 import vapoursynth as vs
 core = vs.get_core()
-#core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
+core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
 import mvsfunc as mvf
 import muvsfunc as muf
 import havsfunc as hav
@@ -42,7 +42,7 @@ source = clip
 #clip = mvs.Depth(clip, depth=32)
 	
 #Neural network super resolution function	
-#clip = muf.super_resolution(clip, **manual_sr_args)	
+clip = muf.super_resolution(clip, **manual_sr_args)	
 	
 #Interesting OpenCV detail enhancement function
 clip = avsfunc.OpenCV_Detail(clip, strength = 50)

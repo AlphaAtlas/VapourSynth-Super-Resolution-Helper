@@ -10,7 +10,7 @@ import cv2
 
 #Don't touch this stuff
 from vapoursynth import core
-#core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
+core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
 import Alpha_ImageHelper as helper
 import Alpha_VSFunctions as avsfunc
 settings = dict()
@@ -88,7 +88,7 @@ def ImageProcess(clip, sdict):
 	#clip = mvs.Depth(clip, depth=32)
 	
 	#Neural network super resolution function	
-	#clip = muf.super_resolution(clip, **manual_sr_args)	
+	clip = muf.super_resolution(clip, **manual_sr_args)	
 	
 	#Super resolution using numpy
 	#Untested!
