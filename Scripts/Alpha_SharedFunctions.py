@@ -109,5 +109,15 @@ def get_gpu_vendor():
         raise Exception("Error finding active graphics card manufacturer!")
     return t
 
+def get_cuda_ver():
+    CUDAVersion = None
+    try: 
+        CUDAVersion = str(os.path.basename(os.getenv("CUDA_PATH")))[1:]
+    except:
+        raise Exception("CUDA is not on PATH. It might be installed incorrectly!")
+    if CUDAVersion is None:
+        raise Exception("Error getting CUDA version")
+    return CUDAVersion
+
 def compact(directory):
     subprocess.Popen(["compact", "/C", "/S", "/I", "/Q", directory], creationflags=subprocess.CREATE_NEW_CONSOLE)

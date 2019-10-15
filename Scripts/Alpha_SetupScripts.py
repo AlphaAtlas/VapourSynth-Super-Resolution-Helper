@@ -1,6 +1,6 @@
 import os, json, zipfile, io, urllib.request, shutil, glob, subprocess, sys, time, importlib, threading, tempfile
 from urllib.parse import urlparse
-from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudnn, get_gpu_vendor, compact
+from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudnn, get_gpu_vendor, compact, get_cuda_ver
 
 
 mxurl = "https://api.github.com/repos/kice/vs_mxnet/releases/latest"
@@ -13,10 +13,12 @@ svnurlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Reso
 
 cpumxmodule = "mxnet"
 
-def install_mxnet(gpuvendor = [False, False, False]):
+torchstuff = ["torch===1.3.0", "torchvision===0.4.1", "-f", r"""https://download.pytorch.org/whl/torch_stable.html"""]
+
+def install_mxnet():
     #Installs the appropriate version of mxnet with pip
     root = get_set_root()
-    if not gpuvendor[0]:
+    if not get_gpu_vendor()[0]:
         subprocess.run([sys.executable, "-m", "pip", "install", cpumxmodule, "--upgrade"], shell=True, check=True)
 
 #TODO: Use pySmartDL JSON fetcher instead
@@ -77,6 +79,12 @@ def install_python_modules():
     root = get_set_root()
     subprocess.run([sys.executable, "-m", "pip", "install"] + pipmodules + ["--upgrade"], shell=True, check=True)
 
+def install_vsgan_cpu():
+    root = get_set_root()
+    if not get_gpu_vendor()[0]:
+        subprocess.run([sys.executable, "-m", "pip", "install"] + torchstuff + ["--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install" + "vsgan" "--upgrade"], shell=True, check=True)
+
 #TODO: Thread Updates
 if __name__ == "__main__":
     root = get_set_root()
@@ -85,10 +93,11 @@ if __name__ == "__main__":
     install_svn()
     install_neural_networks()
     download_mx_plugin()
-    install_mxnet(get_gpu_vendor())
+    install_mxnet()
+    install_vsgan_cpu()
     root = get_set_root()
     compact(os.path.join(root, ".."))
-    if get_gpu_vendor()[0] == True:
+    if get_gpu_vendor()[0]:
         print("Would you like to install CUDA and cuDNN?")
         i = input("Y/N: ")
         if i.lower() == "y":
