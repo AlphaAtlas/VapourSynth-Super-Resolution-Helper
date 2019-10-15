@@ -84,8 +84,8 @@ def ImageProcess(clip, sdict):
 	#clip = core.resize.Spline36(clip, width=clip.width *2, height = clip.height * 2)
 	
 	#Resample an image to 32 bits. This is the bit depth muf.super_resoltuon needs
-	#Note that models aren't RGB models, and each plane might need to be upscaled individually. 
-	#clip = mvs.Depth(clip, depth=32)
+	#Note that some models aren't RGB models, and each plane might need to be upscaled individually. 
+	clip = mvs.Depth(clip, depth=32)
 	
 	#Neural network super resolution function	
 	clip = muf.super_resolution(clip, **manual_sr_args)	
