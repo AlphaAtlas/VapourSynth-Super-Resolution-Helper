@@ -131,10 +131,11 @@ def create_vsgan_folder():
             print(" ")
             dlpath = download(modelurl)
             if modeldir is not None:
-                zippath = os.path.normpath(os.path.join(root, r"../bin/7za.exe"))
+                #zippath = os.path.normpath(os.path.join(root, r"../bin/7za.exe"))
                 modelpath = os.path.normpath(os.path.join(root, r"../ESRGANModels"))
                 os.mkdir(modelpath)
-                s = subprocess.run([zippath, "x", dlpath , "-o" + modelpath, "-aoa"], check=True, shell=True)
+                shutil.move(dlpath, modelpath)
+                #s = subprocess.run([zippath, "x", dlpath , "-o" + modelpath, "-aoa"], check=True, shell=True)
         except:
             print("Error downloading example ESRGAN model!")
             print(" ")

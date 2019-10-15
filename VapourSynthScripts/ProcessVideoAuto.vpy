@@ -42,7 +42,10 @@ source = clip
 #clip = mvs.Depth(clip, depth=32)
 	
 #Neural network super resolution function	
-clip = muf.super_resolution(clip, **manual_sr_args)	
+clip = muf.super_resolution(clip, **manual_sr_args)
+
+#VSRGAN (PyTorch) super resolution:
+clip = VSGAN.Start(clip=clip, model=r"""../ESRGANModels/ad_test_tf.pth""", scale=4, old_arch=False)
 	
 #Interesting OpenCV detail enhancement function
 clip = avsfunc.OpenCV_Detail(clip, strength = 50)
