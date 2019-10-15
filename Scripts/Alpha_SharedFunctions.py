@@ -1,7 +1,9 @@
 import os, sys, subprocess, shutil
 from urllib.parse import urlparse
 
-modelurl = r"""https://www41.zippyshare.com/d/PVqPgXNB/41889/ad_test_tf.pth"""
+modelurl = [r"""https://www41.zippyshare.com/d/PVqPgXNB/41889/ad_test_tf.pth""", r"""https://www41.zippyshare.com/d/PVqPgXNB/18484/ad_test_tf.pth""", r"""https://www41.zippyshare.com/d/PVqPgXNB/14437/ad_test_tf.pth"""]
+
+request_args = {"headers": {"User-Agent": r"""Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0"""}}
 
 def check_cuda():
     #Checks if CUDA is on PATH. It could still be broken!
@@ -82,7 +84,7 @@ def download(dlurl, getjson = False, reuse=False):
     if check is not None:
         return check
     try:
-        dlobj = pySmartDL.SmartDL(dlurl, timeout = 20)
+        dlobj = pySmartDL.SmartDL(dlurl, timeout = 20,  request_args = request_args)
         dlobj.fetch_hash_sums()
         dlobj.start(blocking=True)
         if(getjson):
