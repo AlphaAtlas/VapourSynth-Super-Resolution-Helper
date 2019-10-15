@@ -1,6 +1,6 @@
 
 import subprocess, os, sys, json, shutil, tempfile, tarfile, ctypes
-from Alpha_SharedFunctions import get_set_root, check_cuda, check_cudnn, compact, download, get_cuda_ver
+from Alpha_SharedFunctions import get_set_root, check_cuda, check_cudnn, compact, download, get_cuda_ver, create_vsgan_folder
 import traceback
 
 
@@ -19,12 +19,17 @@ def install_vsgan_gpu(cver):
     root = get_set_root()
     if cver == "10.1":
         subprocess.run([sys.executable, "-m", "pip", "install"] + torchgpu101 + ["--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install" + "vsgan" "--upgrade"], shell=True, check=True)
         print("Installed VSRGAN for CUDA 10.1")
         print (" ")
+        create_vsgan_folder()
+
     elif cver == "9.2":
         subprocess.run([sys.executable, "-m", "pip", "install"] + torchgpu92 + ["vsgan" "--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install" + "vsgan" "--upgrade"], shell=True, check=True)
         print("Installed VSRGAN for CUDA 9.2")
-        print (" ")
+        print(" ")
+        create_vsgan_folder()
     else:
         print("Unable to install VSGAN, as it requires CUDA 10.1 or CUDA 9.2")
         print("Please rerunn the installer and reinstall CUDA if you want to use VSGAN")

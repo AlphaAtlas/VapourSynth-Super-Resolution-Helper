@@ -1,6 +1,6 @@
 import os, json, zipfile, io, urllib.request, shutil, glob, subprocess, sys, time, importlib, threading, tempfile
 from urllib.parse import urlparse
-from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudnn, get_gpu_vendor, compact, get_cuda_ver
+from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudnn, get_gpu_vendor, compact, get_cuda_ver, create_vsgan_folder
 
 
 mxurl = "https://api.github.com/repos/kice/vs_mxnet/releases/latest"
@@ -15,11 +15,10 @@ cpumxmodule = "mxnet"
 
 torchstuff = ["torch===1.3.0", "torchvision===0.4.1", "-f", r"""https://download.pytorch.org/whl/torch_stable.html"""]
 
-def install_mxnet():
+def install_mxnet_cpu():
     #Installs the appropriate version of mxnet with pip
     root = get_set_root()
-    if not get_gpu_vendor()[0]:
-        subprocess.run([sys.executable, "-m", "pip", "install", cpumxmodule, "--upgrade"], shell=True, check=True)
+    subprocess.run([sys.executable, "-m", "pip", "install", cpumxmodule, "--upgrade"], shell=True, check=True)
 
 #TODO: Use pySmartDL JSON fetcher instead
 def get_latest_release_github(url):
@@ -84,6 +83,7 @@ def install_vsgan_cpu():
     if not get_gpu_vendor()[0]:
         subprocess.run([sys.executable, "-m", "pip", "install"] + torchstuff + ["--upgrade"], shell=True, check=True)
         subprocess.run([sys.executable, "-m", "pip", "install" + "vsgan" "--upgrade"], shell=True, check=True)
+        create_vsgan_folder()
 
 #TODO: Thread Updates
 if __name__ == "__main__":
@@ -93,8 +93,9 @@ if __name__ == "__main__":
     install_svn()
     install_neural_networks()
     download_mx_plugin()
-    install_mxnet()
-    install_vsgan_cpu()
+    if not get_gpu_vendor()[0]:
+        install_mxnet_cpu() #TODO: Get CPU version of MXNet working, or remove it. 
+        install_vsgan_cpu()
     root = get_set_root()
     compact(os.path.join(root, ".."))
     if get_gpu_vendor()[0]:
