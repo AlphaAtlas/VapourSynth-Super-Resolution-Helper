@@ -82,7 +82,7 @@ def install_vsgan_cpu():
     root = get_set_root()
     if not get_gpu_vendor()[0]:
         subprocess.run([sys.executable, "-m", "pip", "install"] + torchstuff + ["--upgrade"], shell=True, check=True)
-        subprocess.run([sys.executable, "-m", "pip", "install", "vsgan" "--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install", "vsgan", "--upgrade"], shell=True, check=True)
         create_vsgan_folder()
 
 #TODO: Thread Updates
