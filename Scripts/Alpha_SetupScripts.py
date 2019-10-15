@@ -1,4 +1,4 @@
-import os, json, zipfile, io, urllib.request, shutil, glob, subprocess, sys, time, importlib, threading, tempfile
+import os, json, zipfile, io, urllib.request, shutil, glob, subprocess, sys, time, importlib, threading, tempfile, traceback
 from urllib.parse import urlparse
 from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudnn, get_gpu_vendor, compact, get_cuda_ver, create_vsgan_folder
 
@@ -87,25 +87,30 @@ def install_vsgan_cpu():
 
 #TODO: Thread Updates
 if __name__ == "__main__":
-    root = get_set_root()
-    install_python_modules()
-    import pySmartDL
-    install_svn()
-    install_neural_networks()
-    download_mx_plugin()
-    if not get_gpu_vendor()[0]:
-        install_mxnet_cpu() #TODO: Get CPU version of MXNet working, or remove it. 
-        install_vsgan_cpu()
-    root = get_set_root()
-    compact(os.path.join(root, ".."))
-    if get_gpu_vendor()[0]:
-        print("Would you like to install CUDA and cuDNN?")
-        i = input("Y/N: ")
-        if i.lower() == "y":
-            #This script needs to relaunch itself for admin privledges
-            #Hence it needs to be called as a subprocess
-            #cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
-            #subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE, shell=True, cwd=os.path.normpath(os.path.join(root, "../Scripts")))
-            #As it turns out, the script doesn't like popen. 
-            os.chdir(os.path.normpath(os.path.join(root, "../Scripts")))
-            os.system(r"""..\VapourSynth64\python.exe Alpha_InstallCUDA.py""")
+    try:
+        root = get_set_root()
+        install_python_modules()
+        import pySmartDL
+        install_svn()
+        install_neural_networks()
+        download_mx_plugin()
+        if not get_gpu_vendor()[0]:
+            install_mxnet_cpu() #TODO: Get CPU version of MXNet working, or remove it. 
+            install_vsgan_cpu()
+        root = get_set_root()
+        compact(os.path.join(root, ".."))
+        if get_gpu_vendor()[0]:
+            print("Would you like to install CUDA and cuDNN?")
+            i = input("Y/N: ")
+            if i.lower() == "y":
+                #This script needs to relaunch itself for admin privledges
+                #Hence it needs to be called as a subprocess
+                #cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
+                #subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE, shell=True, cwd=os.path.normpath(os.path.join(root, "../Scripts")))
+                #As it turns out, the script doesn't like popen. 
+                os.chdir(os.path.normpath(os.path.join(root, "../Scripts")))
+                os.system(r"""..\VapourSynth64\python.exe Alpha_InstallCUDA.py""")
+    except Exception as e:
+        #SHOW ME WHAT YOU GOT
+        traceback.print_exc()
+        input("Press ENTER to continue...")

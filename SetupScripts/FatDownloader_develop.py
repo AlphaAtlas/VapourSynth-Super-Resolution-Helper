@@ -1,4 +1,4 @@
-import os, sys, shutil, subprocess, urllib.request, tempfile, time
+import os, sys, shutil, subprocess, urllib.request, tempfile, time, traceback
 from urllib.parse import urlparse
 import pySmartDL
 faturlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/develop/URLs/FATPACK_URL"
@@ -136,46 +136,51 @@ def get_gpu_vendor():
     return t
 
 if __name__ == "__main__":
-    print(r"This exe will download scripts from https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper")
-    print("Make sure you have a at least 10GB free in this directory, some free space on C: for CUDA and an internet connection before continuing!")
-    print(" ")
-    c = input("Do you want to continue? [Y/N]")
-    if c.lower() != "y":
-        raise Exception("You didn't type Y!")
-    #get free space
-    cwd = os.getcwd()
-    if shutil.disk_usage(cwd)[2] < 10000000000:
-        raise Exception("You should have at least 10GB of free disk space!")
-    gpu = get_gpu_vendor()
-    os.system('cls')
-    if os.path.isdir(os.path.join(cwd, "VapourSynth64Portable")):
-        print("Existing VapourSynth Fatpack installation found in this directory. Please delete it or move this installer somewhere else!")
-        print("If you just want to update everything, please use the updater batch file")
+    try:
+        print(r"This exe will download scripts from https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper")
+        print("Make sure you have a at least 10GB free in this directory, some free space on C: for CUDA and an internet connection before continuing!")
         print(" ")
+        c = input("Do you want to continue? [Y/N]")
+        if c.lower() != "y":
+            raise Exception("You didn't type Y!")
+        #get free space
+        cwd = os.getcwd()
+        if shutil.disk_usage(cwd)[2] < 10000000000:
+            raise Exception("You should have at least 10GB of free disk space!")
+        gpu = get_gpu_vendor()
+        os.system('cls')
+        if os.path.isdir(os.path.join(cwd, "VapourSynth64Portable")):
+            print("Existing VapourSynth Fatpack installation found in this directory. Please delete it or move this installer somewhere else!")
+            print("If you just want to update everything, please use the updater batch file")
+            print(" ")
+            input("Press ENTER to continue...")
+            sys.exit()
+        print("Downloading Vapoursynth FatPack URL...")
+        #get download URLs from repo
+        faturl = str(urllib.request.urlopen(faturlurl).read().decode()).rstrip()
+        svnurl = str(urllib.request.urlopen(svnurlurl).read().decode()).rstrip()
+        #TODO: Start a threadpool for all these downloads. 
+        print("Downloading 7zip...")
+        zipexedir = download(zipurl)
+        print("Downloading Vapoursynth FatPack...")
+        fatarchivedir = download(faturl)
+        print("Downloading Super-Resolution Helper Repo...")
+        helperarchivedir = download(helperurl)
+        print("Downloading SVN archive...")
+        svnarchivedir = download(svnurl)
+        #TODO: Thread some of these 7zip calls while downloads are running in the background.
+        print("Extracting FatPack...")
+        subprocess.run([zipexedir, "x", fatarchivedir, "-o" + cwd], shell=True, check=True)  
+        print("Extracting Super-Resolution Helper Stuff...")
+        with tempfile.TemporaryDirectory() as t:
+            subprocess.run([zipexedir, "x", helperarchivedir, "-o" + t], shell=True, check=True)
+            shutil.rmtree(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop/URLs"), ignore_errors = False)
+            shutil.rmtree(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop/SetupScripts"), ignore_errors = False)
+            os.rename(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop"), os.path.join(t, "VapourSynth64Portable"))
+            mergefolders(os.path.join(t, "VapourSynth64Portable"), os.path.join(cwd, "VapourSynth64Portable"))
+        subprocess.run([zipexedir, "x", svnarchivedir, "-o" + "VapourSynth64Portable/bin/PortableSub"], check=True, shell=True)
+        subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/Scripts/Alpha_SetupScripts.py"], creationflags=subprocess.CREATE_NEW_CONSOLE)
+    except Exception as e:
+        #SHOW ME WHAT YOU GOT
+        traceback.print_exc()
         input("Press ENTER to continue...")
-        sys.exit()
-    print("Downloading Vapoursynth FatPack URL...")
-    #get download URLs from repo
-    faturl = str(urllib.request.urlopen(faturlurl).read().decode()).rstrip()
-    svnurl = str(urllib.request.urlopen(svnurlurl).read().decode()).rstrip()
-    #TODO: Start a threadpool for all these downloads. 
-    print("Downloading 7zip...")
-    zipexedir = download(zipurl)
-    print("Downloading Vapoursynth FatPack...")
-    fatarchivedir = download(faturl)
-    print("Downloading Super-Resolution Helper Repo...")
-    helperarchivedir = download(helperurl)
-    print("Downloading SVN archive...")
-    svnarchivedir = download(svnurl)
-    #TODO: Thread some of these 7zip calls while downloads are running in the background.
-    print("Extracting FatPack...")
-    subprocess.run([zipexedir, "x", fatarchivedir, "-o" + cwd], shell=True, check=True)  
-    print("Extracting Super-Resolution Helper Stuff...")
-    with tempfile.TemporaryDirectory() as t:
-        subprocess.run([zipexedir, "x", helperarchivedir, "-o" + t], shell=True, check=True)
-        shutil.rmtree(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop/URLs"), ignore_errors = False)
-        shutil.rmtree(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop/SetupScripts"), ignore_errors = False)
-        os.rename(os.path.join(t, "VapourSynth-Super-Resolution-Helper-develop"), os.path.join(t, "VapourSynth64Portable"))
-        mergefolders(os.path.join(t, "VapourSynth64Portable"), os.path.join(cwd, "VapourSynth64Portable"))
-    subprocess.run([zipexedir, "x", svnarchivedir, "-o" + "VapourSynth64Portable/bin/PortableSub"], check=True, shell=True)
-    subprocess.Popen(["VapourSynth64Portable/VapourSynth64/python.exe", "VapourSynth64Portable/Scripts/Alpha_SetupScripts.py"], creationflags=subprocess.CREATE_NEW_CONSOLE)

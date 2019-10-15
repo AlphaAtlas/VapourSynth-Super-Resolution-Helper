@@ -174,8 +174,6 @@ if __name__ == "__main__":
             #But this also seems to be "getting admin privledges?"
             pass
     except Exception as e:
-        #Cant seem to write to stderr or stdout from the admin console
-        #And I don't know how to stop it from closing
-        #Fine... just catch ALL the exceptions and print them
+        #SHOW ME WHAT YOU GOT
         traceback.print_exc()
         input("Press ENTER to continue...")
