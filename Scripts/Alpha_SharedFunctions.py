@@ -99,11 +99,11 @@ def get_gpu_vendor():
     #Returns a boolean list with (Nvidia, AMD, Intel)
     t = [False, False, False] 
     line = str(subprocess.check_output("wmic path win32_VideoController get name"))
-    if "Nvidia" in line:
+    if "nvidia" in line.lower():
         t[0] = True
-    if "AMD" in line:
+    if "amd" in line.lower():
         t[1] = True
-    if "Intel" in line:
+    if "intel" in line.lower():
         t[2] = True
     if t == [False, False, False]:
         raise Exception("Error finding active graphics card manufacturer!")

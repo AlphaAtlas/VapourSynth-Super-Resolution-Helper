@@ -104,14 +104,14 @@ def get_gpu_vendor():
     t = [False, False, False] 
     line = str(subprocess.check_output("wmic path win32_VideoController get name"))
     print(line)
-    if "Nvidia" in line:
+    if "nvidia" in line.lower():
         os.system('cls')
         print("Nvidia graphics detected and active.")
         print("Your GPU should accelerate MXNet processing.")
         print(" ")
         input("Press ENTER to continue...")
         t[0] = True
-    if "AMD" in line:
+    if "amd" in line.lower():
         os.system('cls')
         print("AMD graphics detected.")
         print("MXNet upscaling will only run on the CPU, which is VERY slow.")
@@ -122,7 +122,7 @@ def get_gpu_vendor():
         print(" ")
         input("Press ENTER to continue...")
         t[1] = True
-    if "Intel" in line:
+    if "intel" in line.lower():
         os.system('cls')
         print("Intel graphics detected.")
         print("If you're on a laptop or an iMac-style all-in-one computer, you should force enable your main Nvidia/AMD graphics card.")
