@@ -13,7 +13,7 @@ svnurlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Reso
 
 cpumxmodule = "mxnet"
 
-torchstuff = ["torch===1.3.0", "torchvision===0.4.1", "-f", r"""https://download.pytorch.org/whl/torch_stable.html"""]
+torchstuff = ["torch===1.3.0+cpu", "torchvision===0.4.1+cpu", "-f", r"""https://download.pytorch.org/whl/torch_stable.html"""]
 
 def install_mxnet_cpu():
     #Installs the appropriate version of mxnet with pip
