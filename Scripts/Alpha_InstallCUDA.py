@@ -175,5 +175,6 @@ if __name__ == "__main__":
             pass
     except Exception as e:
         #SHOW ME WHAT YOU GOT
+        print(" ")
         traceback.print_exc()
         input("Press ENTER to continue...")
