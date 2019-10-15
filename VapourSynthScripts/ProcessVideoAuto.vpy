@@ -39,7 +39,7 @@ source = clip
 	
 #Resample an image to 32 bits. This is the bit depth muf.super_resoltuon needs
 #Note that some models aren't RGB models, and each plane might need to be upscaled individually. 
-#clip = mvs.Depth(clip, depth=32)
+clip = mvs.Depth(clip, depth=32)
 	
 #Neural network super resolution function	
 clip = muf.super_resolution(clip, **manual_sr_args)	
