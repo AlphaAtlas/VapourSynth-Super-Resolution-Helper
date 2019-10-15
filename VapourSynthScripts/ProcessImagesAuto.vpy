@@ -24,13 +24,13 @@ sr_args = dict(model_filename=r'../NeuralNetworks/IDN\IDN_2x', device_id=0,up_sc
 #------------
 
 #(r"""folder path""") Folder to read images out of. Use / or \\ instead of single backslashes, and try not to leave a slash behind the last folder. 
-settings['inputfolder'] = r"""C:/Users/Alex/MPRimworld/RimWorld1-0-2282Win64\\Mods\\1127530465\\Textures"""	#This is the path to the directory with images you want to upscale
+settings['inputfolder'] = r"""C:/foo\\Textures"""	#This is the path to the directory with images you want to upscale
 
 #('string')Filter mode."filetype" gets all images with the 'inputformat' extension, "similarimage" gets images with the same resolution/format as a specified image
 settings['filtermode']= r"similarimage"
 
 #(r"""folder path""") Only images with the same properties as this image will be processed if "similarimage" is set as the filter mode. And remember, \ is bad, mkay? 
-settings['inputimagedir'] = r"""C:\\Users\\Alex\\MPRimworld\\RimWorld1-0-2282Win64\\Mods\\1127530465\\Textures\\Rimatomics\\Things\\RimatomicsBuildings\\raddetector.png"""					
+settings['inputimagedir'] = r"""C:\\foo/Textures/image.png"""					
 
 #('string') Input image file extension when "filetype" is set as the filter mode, all other file types will be ignored.
 settings['inputformat'] = r"png"
