@@ -1,6 +1,11 @@
 import os, sys, subprocess, shutil
 from urllib.parse import urlparse
 
+modelurl = [r"""https://www41.zippyshare.com/d/PVqPgXNB/41889/ad_test_tf.pth""", r"""https://www41.zippyshare.com/d/PVqPgXNB/18484/ad_test_tf.pth""", r"""https://www41.zippyshare.com/d/PVqPgXNB/14437/ad_test_tf.pth"""]
+#TODO: Change model download
+
+request_args = {"headers": {"User-Agent": r"""Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0"""}}
+
 def check_cuda():
     #Checks if CUDA is on PATH. It could still be broken!
     return (shutil.which("nvcc.exe") is not None) and (os.getenv("CUDA_PATH") is not None)
@@ -80,19 +85,19 @@ def download(dlurl, getjson = False, reuse=False):
     if check is not None:
         return check
     try:
-        dlobj = pySmartDL.SmartDL(dlurl, timeout = 20)
+        dlobj = pySmartDL.SmartDL(dlurl, timeout = 20,  request_args = request_args)
         dlobj.fetch_hash_sums()
         dlobj.start(blocking=True)
         if(getjson):
             return dlobj.get_json()
         else:
-            return dlobj.get_dest()
+            return os.path.normpath(dlobj.get_dest())
     except:
         if(getjson):
             raise Exception("Fetching JSON from" + dlurl + "failed!")
         print("Download failed! Trying backup method...")
         print(" ")
-        return backupdownload(dlurl)
+        return os.path.normpath(backupdownload(dlurl))
 
 #TODO: Multi GPU vendor support?
 def get_gpu_vendor():
@@ -108,6 +113,44 @@ def get_gpu_vendor():
     if t == [False, False, False]:
         raise Exception("Error finding active graphics card manufacturer!")
     return t
+
+def get_cuda_ver():
+    CUDAVersion = None
+    try: 
+        CUDAVersion = str(os.path.basename(os.getenv("CUDA_PATH")))[1:]
+    except:
+        raise Exception("CUDA is not on PATH. It might be installed incorrectly!")
+    if CUDAVersion is None:
+        raise Exception("Error getting CUDA version")
+    return CUDAVersion
+
+def create_vsgan_folder():
+    root = get_set_root()
+    if not os.path.isdir("../ESRGANModels"):
+        modeldir = None
+        modelpath = os.path.normpath(os.path.join(root, r"../ESRGANModels"))
+        """ try: 
+            print("Downloading example ESRGAN model from: ")
+            print("https://upscale.wiki/wiki/Model_Database#Cartoon_.2F_Comic_2")
+            print(" ")
+            dlpath = download(modelurl)
+            if modeldir is not None:
+                #zippath = os.path.normpath(os.path.join(root, r"../bin/7za.exe"))
+                shutil.move(dlpath, modelpath)
+                #s = subprocess.run([zippath, "x", dlpath , "-o" + modelpath, "-aoa"], check=True, shell=True)
+        except:
+            print("Error downloading example ESRGAN model!")
+            print("You can get more examples at:")
+            print("https://upscale.wiki/wiki/Model_Database")
+            os.mkdir(modelpath)
+            print(" ") """
+        #TODO: Find a working download url...
+        os.mkdir(modelpath)
+
+
+
+
+
 
 def compact(directory):
     subprocess.Popen(["compact", "/C", "/S", "/I", "/Q", directory], creationflags=subprocess.CREATE_NEW_CONSOLE)

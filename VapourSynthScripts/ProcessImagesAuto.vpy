@@ -30,7 +30,8 @@ settings['inputfolder'] = r"""C:/foo\\Textures"""	#This is the path to the direc
 settings['filtermode']= r"similarimage"
 
 #(r"""folder path""") Only images with the same properties as this image will be processed if "similarimage" is set as the filter mode. And remember, \ is bad, mkay? 
-settings['inputimagedir'] = r"""C:\\foo/Textures/image.png"""					
+settings['inputimagedir'] = r"""C:\\foo/Textures/texture.png"""					
+
 
 #('string') Input image file extension when "filetype" is set as the filter mode, all other file types will be ignored.
 settings['inputformat'] = r"png"
@@ -88,11 +89,14 @@ def ImageProcess(clip, sdict):
 	clip = mvs.Depth(clip, depth=32)
 	
 	#Neural network super resolution function	
-	clip = muf.super_resolution(clip, **manual_sr_args)	
+	#clip = muf.super_resolution(clip, **manual_sr_args)	
 	
 	#Super resolution using numpy
 	#Untested!
 	#clip = mufnp.super_resolution(clip, **manual_sr_args)
+
+	#VSRGAN (PyTorch) super resolution:
+	clip = VSGAN.Start(clip=clip, model=r"""../ESRGANModels/ad_test_tf.pth""", scale=4, old_arch=False)
 	
 	#Interesting OpenCV detail enhancement function
 	clip = avsfunc.OpenCV_Detail(clip, strength = 50)

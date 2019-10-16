@@ -1,6 +1,6 @@
 
 import subprocess, os, sys, json, shutil, tempfile, tarfile, ctypes
-from Alpha_SharedFunctions import get_set_root, check_cuda, check_cudnn, compact, download
+from Alpha_SharedFunctions import get_set_root, check_cuda, check_cudnn, compact, download, get_cuda_ver, create_vsgan_folder
 import traceback
 
 
@@ -9,19 +9,43 @@ CUDAJSON = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Resol
 #TODO: remove modules that aren't needed
 cuda_args = ['nvcc', 'cuobjdump', "nvprune", "cupti", "gpu_library_advisor", "memcheck", "nvdisasm", "nvprof", "visual_profiler", "visual_studio_integration"," demo_suite", "documentation", "cublas", "cublas_dev", "cudart", "cufft", "cufft_dev", "curand", "curand_dev", "cusolver", "cusolver_dev", "cusparse", "cusparse_dev", "nvgraph", "npp", "npp_dev", "nvrtc", "nvrtc_dev", "nvml_dev"]
 
+torchgpu101 = ["torch===1.3.0", "torchvision===0.4.1", "-f", r"""https://download.pytorch.org/whl/torch_stable.html"""]
+
+torchgpu92 = ["torch==1.3.0+cu92", "torchvision==0.4.1+cu92", "-f", r"""https://download.pytorch.org/whl/torch_stable.html"""]
+
 #This script needs to relaunch itself with elevated privledges, so it has to be a seperate file.
 
-def install_mxnet_gpu():
+def install_vsgan_gpu(cver):
+    root = get_set_root()
+    if cver == "10.1":
+        subprocess.run([sys.executable, "-m", "pip", "install"] + torchgpu101 + ["--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install" + "vsgan" "--upgrade"], shell=True, check=True)
+        print("Installed VSRGAN for CUDA 10.1")
+        print (" ")
+        create_vsgan_folder()
+
+    elif cver == "9.2":
+        subprocess.run([sys.executable, "-m", "pip", "install"] + torchgpu92 + ["vsgan" "--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install" + "vsgan" "--upgrade"], shell=True, check=True)
+        print("Installed VSRGAN for CUDA 9.2")
+        print(" ")
+        create_vsgan_folder()
+    else:
+        print("Unable to install VSGAN, as it requires CUDA 10.1 or CUDA 9.2")
+        print("Please rerunn the installer and reinstall CUDA if you want to use VSGAN")
+        print(" ")
+        input("Press ENTER to continue...")
+
+def install_mxnet_gpu(cver):
     #Installs the appropriate version of mxnet with pip
     root = get_set_root()
-    cudafull = get_cuda_ver()
-    cudastr = cudafull.replace(".", "")
+    cudastr = cver.replace(".", "")
     mxmodule = "mxnet-cu" + cudastr
     try: 
         subprocess.run([sys.executable, "-m", "pip", "install", mxmodule, "--upgrade"], shell=True, check=True)
     except:
         print("ERROR: mxnet module for CUDA " + cudafull + "is not availible!")
-        print("Please install an appropriate version of CUDA and rerun the update script, if you want MXNet processing")
+        print("Please install an appropriate version of CUDA and rerun this update script, if you want MXNet processing")
         print("")
         input("Press ENTER to continue...")
 
@@ -53,16 +77,6 @@ def run_as_admin(argv=None, debug=False):
     if int(ret) <= 32:
         return False
     return None
-
-def get_cuda_ver():
-    CUDAVersion = None
-    try: 
-        CUDAVersion = str(os.path.basename(os.getenv("CUDA_PATH")))[1:]
-    except:
-        raise Exception("CUDA is not on PATH. It might be installed incorrectly!")
-    if CUDAVersion is None:
-        raise Exception("Error getting CUDA version")
-    return CUDAVersion
 
 def install_cuda(ujson, cudver = "10.1"):
     #Installs the appropriate version of CUDA silently
@@ -106,6 +120,7 @@ def install_cudnn(cver, ujson):
         tar.close()
         if not check_cudnn():
             raise Exception("Error installing cuDNN!")
+
         print('cuDNN installed!')
     else:
         print("No appropriate version of cuDNN found for CUDA " + cver + ".")
@@ -116,7 +131,6 @@ def install_cudnn(cver, ujson):
         if choice.lower() == 'yes':
             install_cuda(ujson)
             install_cudnn(cver, ujson)
-    install_mxnet_cupy_gpu()
 
 
 #Check for, install, and verify CUDA and cuDNN
@@ -144,10 +158,15 @@ if __name__ == "__main__":
                     print("cuDNN files found!")
                 else: 
                     install_cudnn(cver, urljson)
+                install_mxnet_gpu(cver)
+                install_vsgan_gpu(cver)
             else:
                 install_cuda(urljson)
                 cver = get_cuda_ver()
+
                 install_cudnn(cver, urljson)
+                install_mxnet_gpu(cver)
+                install_vsgan_gpu(cver)
                 print(" ")
             print("Compressing CUDA directory in background...")
             compact(os.path.normpath(os.path.join(os.getenv("programfiles"), "NVIDIA GPU Computing Toolkit")))
@@ -155,8 +174,7 @@ if __name__ == "__main__":
             #But this also seems to be "getting admin privledges?"
             pass
     except Exception as e:
-        #Cant seem to write to stderr or stdout from the admin console
-        #And I don't know how to stop it from closing
-        #Fine... just catch ALL the exceptions and print them
+        #SHOW ME WHAT YOU GOT
+        print(" ")
         traceback.print_exc()
         input("Press ENTER to continue...")

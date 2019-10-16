@@ -1,6 +1,6 @@
-import os, json, zipfile, io, urllib.request, shutil, glob, subprocess, sys, time, importlib, threading, tempfile
+import os, json, zipfile, io, urllib.request, shutil, glob, subprocess, sys, time, importlib, threading, tempfile, traceback
 from urllib.parse import urlparse
-from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudnn, get_gpu_vendor, compact
+from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudnn, get_gpu_vendor, compact, get_cuda_ver, create_vsgan_folder
 
 
 mxurl = "https://api.github.com/repos/kice/vs_mxnet/releases/latest"
@@ -13,11 +13,12 @@ svnurlurl = "https://raw.githubusercontent.com/AlphaAtlas/VapourSynth-Super-Reso
 
 cpumxmodule = "mxnet"
 
-def install_mxnet(gpuvendor = [False, False, False]):
+torchstuff = ["torch===1.3.0+cpu", "torchvision===0.4.1+cpu", "-f", r"""https://download.pytorch.org/whl/torch_stable.html"""]
+
+def install_mxnet_cpu():
     #Installs the appropriate version of mxnet with pip
     root = get_set_root()
-    if not gpuvendor[0]:
-        subprocess.run([sys.executable, "-m", "pip", "install", cpumxmodule, "--upgrade"], shell=True, check=True)
+    subprocess.run([sys.executable, "-m", "pip", "install", cpumxmodule, "--upgrade"], shell=True, check=True)
 
 #TODO: Use pySmartDL JSON fetcher instead
 def get_latest_release_github(url):
@@ -77,25 +78,40 @@ def install_python_modules():
     root = get_set_root()
     subprocess.run([sys.executable, "-m", "pip", "install"] + pipmodules + ["--upgrade"], shell=True, check=True)
 
+def install_vsgan_cpu():
+    root = get_set_root()
+    if not get_gpu_vendor()[0]:
+        subprocess.run([sys.executable, "-m", "pip", "install"] + torchstuff + ["--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install", "vsgan", "--upgrade"], shell=True, check=True)
+        create_vsgan_folder()
+
 #TODO: Thread Updates
 if __name__ == "__main__":
-    root = get_set_root()
-    install_python_modules()
-    import pySmartDL
-    install_svn()
-    install_neural_networks()
-    download_mx_plugin()
-    install_mxnet(get_gpu_vendor())
-    root = get_set_root()
-    compact(os.path.join(root, ".."))
-    if get_gpu_vendor()[0] == True:
-        print("Would you like to install CUDA and cuDNN?")
-        i = input("Y/N: ")
-        if i.lower() == "y":
-            #This script needs to relaunch itself for admin privledges
-            #Hence it needs to be called as a subprocess
-            #cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
-            #subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE, shell=True, cwd=os.path.normpath(os.path.join(root, "../Scripts")))
-            #As it turns out, the script doesn't like popen. 
-            os.chdir(os.path.normpath(os.path.join(root, "../Scripts")))
-            os.system(r"""..\VapourSynth64\python.exe Alpha_InstallCUDA.py""")
+    try:
+        root = get_set_root()
+        install_python_modules()
+        import pySmartDL
+        install_svn()
+        install_neural_networks()
+        download_mx_plugin()
+        if not get_gpu_vendor()[0]:
+            install_mxnet_cpu() #TODO: Get CPU version of MXNet working, or remove it. 
+            install_vsgan_cpu()
+        root = get_set_root()
+        compact(os.path.join(root, ".."))
+        if get_gpu_vendor()[0]:
+            print("Would you like to install CUDA and cuDNN?")
+            i = input("Y/N: ")
+            if i.lower() == "y":
+                #This script needs to relaunch itself for admin privledges
+                #Hence it needs to be called as a subprocess
+                #cudascriptpath = os.path.normpath(os.path.join(root, "../Scripts/Alpha_InstallCUDA.py"))
+                #subprocess.Popen([sys.executable, cudascriptpath], creationflags=subprocess.CREATE_NEW_CONSOLE, shell=True, cwd=os.path.normpath(os.path.join(root, "../Scripts")))
+                #As it turns out, the script doesn't like popen. 
+                os.chdir(os.path.normpath(os.path.join(root, "../Scripts")))
+                os.system(r"""..\VapourSynth64\python.exe Alpha_InstallCUDA.py""")
+    except Exception as e:
+        #SHOW ME WHAT YOU GOT
+        print(" ")
+        traceback.print_exc()
+        input("Press ENTER to continue...")
