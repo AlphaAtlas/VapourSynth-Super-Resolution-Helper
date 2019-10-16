@@ -13,10 +13,5 @@ Scripts under construction. Some of the project works now, but the Nvidia instal
 ![WzLvUe.gif](https://i.lensdump.com/i/WzLvUe.gif)
 ![WzLMZk.gif](https://i.lensdump.com/i/WzLMZk.gif)
 
-Why would anyone want this, as opposed to installing vapoursynth manually or running TensorFlow/MXnet/etc though scripts themselves?
-
-* VapourSynth has a HUGE library of video processing functions, developed over many years (if you count all the Avisynth ports), that are normally hard to use with a big folder of images. Many of them work just fine with images, and the syntax is relatively easy to learn.  
-
-* The dependances for WolframRhodium's super resolution script are tricky and impossible to package in PyPI or VSRepo. For example, cuDNN can't be redistributed, python can break itself when installing large plugins like mxnet, the super-resolution-zoo repo is HUGE, etc. Basically, it's time consuming to setup yourself, a pain to troubleshoot if something breaks, and it can pollute your regular VapourSynth or NN processing installation. A 1 click installer, with everything (except CUDA and cuDNN) contained to one folder, solves all that. 
 
 
