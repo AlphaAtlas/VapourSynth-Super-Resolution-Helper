@@ -2,6 +2,7 @@ import os, sys, subprocess, shutil
 from urllib.parse import urlparse
 
 modelurl = [r"""https://www41.zippyshare.com/d/PVqPgXNB/41889/ad_test_tf.pth""", r"""https://www41.zippyshare.com/d/PVqPgXNB/18484/ad_test_tf.pth""", r"""https://www41.zippyshare.com/d/PVqPgXNB/14437/ad_test_tf.pth"""]
+#TODO: Change model download
 
 request_args = {"headers": {"User-Agent": r"""Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0"""}}
 
@@ -127,20 +128,24 @@ def create_vsgan_folder():
     root = get_set_root()
     if not os.path.isdir("../ESRGANModels"):
         modeldir = None
-        try: 
+        modelpath = os.path.normpath(os.path.join(root, r"../ESRGANModels"))
+        """ try: 
             print("Downloading example ESRGAN model from: ")
             print("https://upscale.wiki/wiki/Model_Database#Cartoon_.2F_Comic_2")
             print(" ")
             dlpath = download(modelurl)
             if modeldir is not None:
                 #zippath = os.path.normpath(os.path.join(root, r"../bin/7za.exe"))
-                modelpath = os.path.normpath(os.path.join(root, r"../ESRGANModels"))
-                os.mkdir(modelpath)
                 shutil.move(dlpath, modelpath)
                 #s = subprocess.run([zippath, "x", dlpath , "-o" + modelpath, "-aoa"], check=True, shell=True)
         except:
             print("Error downloading example ESRGAN model!")
-            print(" ")
+            print("You can get more examples at:")
+            print("https://upscale.wiki/wiki/Model_Database")
+            os.mkdir(modelpath)
+            print(" ") """
+        #TODO: Find a working download url...
+        os.mkdir(modelpath)
 
 
 
