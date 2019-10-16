@@ -32,6 +32,7 @@ settings['filtermode']= r"similarimage"
 #(r"""folder path""") Only images with the same properties as this image will be processed if "similarimage" is set as the filter mode. And remember, \ is bad, mkay? 
 settings['inputimagedir'] = r"""C:\\foo/Textures/texture.png"""					
 
+
 #('string') Input image file extension when "filetype" is set as the filter mode, all other file types will be ignored.
 settings['inputformat'] = r"png"
 
@@ -84,8 +85,8 @@ def ImageProcess(clip, sdict):
 	#clip = core.resize.Spline36(clip, width=clip.width *2, height = clip.height * 2)
 	
 	#Resample an image to 32 bits. This is the bit depth muf.super_resoltuon needs
-	#Note that models aren't RGB models, and each plane might need to be upscaled individually. 
-	#clip = mvs.Depth(clip, depth=32)
+	#Note that some models aren't RGB models, and each plane might need to be upscaled individually. 
+	clip = mvs.Depth(clip, depth=32)
 	
 	#Neural network super resolution function	
 	#clip = muf.super_resolution(clip, **manual_sr_args)	
