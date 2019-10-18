@@ -1,4 +1,4 @@
-Scripts that automate the installation of VapourSynth and a bunch of ESRGAN/MXnet super resolution stuff. Because it's a pain to install by hand, and you can upscale with a GUI.
+Scripts that automate the installation of VapourSynth and a bunch of ESRGAN/MXnet super resolution stuff. Because it's a pain to install by hand, and you can upscale with a GUI!
 
 ONLY supports Windows. Works best with Nvidia GPUs. 
 
