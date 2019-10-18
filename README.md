@@ -6,7 +6,7 @@ ONLY supports Windows. Works best with Nvidia GPUs.
 
 ![WzLvUe.gif](https://raw.githubusercontent.com/AlphaAtlas/VSSH-Wiki-Images/master/images/WzLvUe.gif)
 
-![demo.gif](https://raw.githubusercontent.com/AlphaAtlas/VSSH-Wiki-Images/master/images/demo.gif)
+![demo2.gif](https://raw.githubusercontent.com/AlphaAtlas/VSSH-Wiki-Images/master/images/demo2.gif)
 
 This is basically a simple installer for ChaosKing's portable vapoursynth fatpack, WolframRhodium's super resolution stuff, and a bunch of Python packages:
 
