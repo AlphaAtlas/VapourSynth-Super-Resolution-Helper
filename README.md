@@ -4,9 +4,9 @@ ONLY supports Windows. Works best with Nvidia GPUs.
 
 **[Check out the wiki!](https://github.com/AlphaAtlas/VapourSynth-Super-Resolution-Helper/wiki)**
 
-![WzLvUe.gif](https://i.lensdump.com/i/WzLvUe.gif)
+![WzLvUe.gif](https://raw.githubusercontent.com/AlphaAtlas/VSSH-Wiki-Images/master/images/WzLvUe.gif)
 
-![VSWindow](https://raw.githubusercontent.com/AlphaAtlas/VSSH-Wiki-Images/master/images/VSWindow.JPG)
+![demo.gif](https://raw.githubusercontent.com/AlphaAtlas/VSSH-Wiki-Images/master/images/demo.gif)
 
 This is basically a simple installer for ChaosKing's portable vapoursynth fatpack, WolframRhodium's super resolution stuff, and a bunch of Python packages:
 
