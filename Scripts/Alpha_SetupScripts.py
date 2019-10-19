@@ -42,6 +42,8 @@ def get_latest_release_github(url):
 def download_mx_plugin():
     #Downloads and moves kice's MXNet plugin. Automatically gets newest release. 
     root = get_set_root()
+    print("Downloading MXNet Plugin...")
+    print(" ")
     rurl = get_latest_release_github(mxurl)
     d = download(rurl)
     if os.path.isdir("MXNet"):
@@ -56,6 +58,8 @@ def download_ffmpeg():
     root = get_set_root()
     ffmpegdir = os.path.join(root, "../bin/ffmpeg.exe")
     if not os.path.isfile(ffmpegdir):
+        print("Downloading ffmpeg...")
+        print(" ")
         d = download(ffurl)
         zipexedir = os.path.join(root, "../bin/7za.exe")
         with tempfile.TemporaryDirectory() as t:
