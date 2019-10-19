@@ -10,6 +10,9 @@ import vsgan as VSGAN
 import vapoursynth as vs
 from vapoursynth import core
 
+#Comment this out if mxnet isn't working
+core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
+
 #Set max cache size, in MB. If you have RAM to spare, remove the "#" in front of the line below and change the value.
 #core.max_cache_size = 6000
 
@@ -23,13 +26,13 @@ manual_sr_args['block_h']=64
 
 
 #Change the path to the video you're working with!
-#clip = core.ffms2.Source(r"../CustomScripts/Samples/isssmall.mkv")
+#clip = core.ffms2.Source(r"""Path To Your Video/video.mkv""")
 
 #Alternative source filter, good if ffms2 gives you video corruption
-#clip = core.lsmas.LWLibavSource(r"../CustomScripts/Samples/isssmall.mkv")
+#clip = core.lsmas.LWLibavSource(r"""Path To Your Video/video.mkv""")
 
 #This reads an image instead of a video. See http://www.vapoursynth.com/doc/plugins/imwri.html
-clip = core.imwri.Read(r"../CustomScripts/Samples/texture.dds")
+clip = core.imwri.Read(r"""Samples/texture.dds""")
 
 #save source for comparison later
 source = clip
