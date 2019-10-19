@@ -1,18 +1,18 @@
-#Import Scripts here 
-import os, sys
+#Import stuff here. Comment out what you don't need.
 import mxnet as mx
 import mvsfunc as mvs
 import muvsfunc as muf
 import muvsfunc_numpy as mufnp
-import numpy as np
-import cv2
-
-
-#Don't touch this stuff
-from vapoursynth import core
-core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
 import Alpha_ImageHelper as helper
 import Alpha_VSFunctions as avsfunc
+import vsgan as VSGAN
+import vapoursynth as vs
+from vapoursynth import core
+
+#Comment this out if mxnet isn't working
+core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
+
+#Don't touch this stuff
 settings = dict()
 try: nopreview
 except NameError: settings['nopreview'] = False
@@ -75,31 +75,37 @@ manual_sr_args['block_h']=64
 #---------------------
 
 #Get a dict of categorized images in the 'inputfolder' directory
-
 settings.update(manual_sr_args)
 settings['sizeformatdict'] = helper.GetFileDict(**settings)
 
-#This function processes your images
+#This function processes your images. Some example functions are commented out:
 def ImageProcess(clip, sdict):
-	#Double the size of an image
-	#clip = core.resize.Spline36(clip, width=clip.width *2, height = clip.height * 2)
-	
-	#Resample an image to 32 bits. This is the bit depth muf.super_resoltuon needs
-	#Note that some models aren't RGB models, and each plane might need to be upscaled individually. 
-	clip = mvs.Depth(clip, depth=32)
-	
-	#Neural network super resolution function	
-	#clip = muf.super_resolution(clip, **manual_sr_args)	
-	
-	#Super resolution using numpy
-	#Untested!
-	#clip = mufnp.super_resolution(clip, **manual_sr_args)
+	#Keep everything in this function tabbed!
+	#Resampling to a higher bit depth first generally gives you better quality
+	#clip = mvs.Depth(clip, bits = 16)
 
-	#VSRGAN (PyTorch) super resolution:
-	clip = VSGAN.Start(clip=clip, model=r"""../ESRGANModels/ad_test_tf.pth""", scale=4, old_arch=False)
-	
+	#Denoise on the GPU. Works with AMD/Intel/Nvidia, h represents aggressiveness, a is kind of quality. 
+	core.knlm.KNLMeansCL(clip, d=0, a=3, h=1.3)
+		
 	#Interesting OpenCV detail enhancement function
 	clip = avsfunc.OpenCV_Detail(clip, strength = 50)
+
+	#Double the size of an image with regular spline scaling
+	#clip = core.resize.Spline36(clip, width=clip.width *2, height = clip.height * 2)
+	
+	#MXnet super resolution function. This will resample your clip to 32 bits!
+	#https://github.com/WolframRhodium/muvsfunc/blob/master/muvsfunc.py#L4329
+	#clip = muf.super_resolution(clip, **manual_sr_args)	
+	
+	#Super resolution using numpy. Untested!
+	#clip = mufnp.super_resolution(clip, **manual_sr_args)
+
+	#VSRGAN (PyTorch) super resolution. It'll resample your clip to 8 bit RGB!
+	#https://gitlab.com/imPRAGMA/VSGAN/wikis/Usage
+	#clip = VSGAN.Start(clip=clip, model=r"""../ESRGANModels/ad_test_tf.pth""", scale=4, old_arch=False)
+
+	#Convert back to RGB, for image writing
+	#clip = mvs.ToRGB(clip, bits = 16)
 	
 	return clip
 
