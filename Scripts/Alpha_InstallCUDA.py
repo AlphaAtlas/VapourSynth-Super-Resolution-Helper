@@ -19,7 +19,7 @@ def install_vsgan_gpu(cver):
     root = get_set_root()
     if cver == "10.1":
         subprocess.run([sys.executable, "-m", "pip", "install"] + torchgpu101 + ["--upgrade"], shell=True, check=True)
-        subprocess.run([sys.executable, "-m", "pip", "install" + "vsgan" "--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install", "vsgan" "--upgrade"], shell=True, check=True)
         print("Installed VSRGAN for CUDA 10.1")
         print (" ")
         create_vsgan_folder()
