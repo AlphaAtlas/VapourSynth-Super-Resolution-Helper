@@ -111,7 +111,7 @@ def ImageProcess(clip, sdict):
 
 #This function processes alpha (transparency) layers, if there are any
 def AlphaProcess(alphaclip, sdict):
-
+	#
 	return alphaclip
 
 #Run all the finctions, write the processed images, and set output.
