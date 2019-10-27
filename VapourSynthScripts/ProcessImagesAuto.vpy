@@ -17,7 +17,7 @@ from vapoursynth import core
 #Main options
 #------------
 
-#(r"""folder path""") Folder to read images out of. Use / or \\ instead of single backslashes, and try not to leave a slash behind the last folder. 
+#(r"folder path") Folder to read images out of. Use / or \\ instead of single backslashes, and try not to leave a slash behind the last folder. 
 inputfolder = r"Samples"	#This is the path to the directory with images you want to upscale
 
 #('string')Filter mode."filetype" gets all images with the 'inputformat' extension, "similarimage" gets images with the same resolution/format as a specified image
@@ -39,6 +39,9 @@ imgformat= "jpg"
 #-------------
 #Extra Options
 #-------------
+
+#Comment this out if mxnet isn't working, or if you don't need it. 
+core.std.LoadPlugin(r'MXNet/vs_mxnet.dll', altsearchpath=True)
 
 #('string')Algorithm to use for .dds file compression, among other filetypes. 
 #None, DXT1, DXT5, and (maybe) DXT3 are valid. See http://www.vapoursynth.com/doc/plugins/imwri.html
