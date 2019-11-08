@@ -19,7 +19,7 @@ def install_vsgan_gpu(cver):
     root = get_set_root()
     if cver == "10.1":
         subprocess.run([sys.executable, "-m", "pip", "install"] + torchgpu101 + ["--upgrade"], shell=True, check=True)
-        subprocess.run([sys.executable, "-m", "pip", "install", "vsgan" "--upgrade"], shell=True, check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install", "vsgan", "--upgrade"], shell=True, check=True)
         print("Installed VSRGAN for CUDA 10.1")
         print (" ")
         create_vsgan_folder()
@@ -98,7 +98,12 @@ def install_cuda(ujson, cudver = "10.1"):
     print(" ")
     print("Silently Installing CUDA. This could take awhile...")
     print(" ")
-    s = subprocess.run([cudir] + cuda_strings, check=True, shell=True)
+    try:
+        s = subprocess.run([cudir] + cuda_strings, check=True, shell=True)
+    except:
+        print(" ")
+        print("Background CUDA Installer failed!")
+    
     if not check_cuda():
         raise Exception("CUDA installation failed!")
     print("CUDA installation done.")
