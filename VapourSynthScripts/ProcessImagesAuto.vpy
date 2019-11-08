@@ -92,10 +92,10 @@ def ImageProcess(clip):
 	#clip = mufnp.super_resolution(clip, **manual_sr_args)
 
 	#VSRGAN (PyTorch) super resolution. It'll resample your clip to 8 bit RGB!
+	#https://github.com/imPRAGMA/VSGAN/wiki
 	#vsgan_device = VSGAN.VSGAN()
 	#vsgan_device.load_model(model=r"""../ESRGANModels/ad_test_tf.pth""", scale=4)
-	#ad = vsgan_device.run(clip=clip, chunk = False)
-	#vsgan_device.load_model(model=r"""../ESRGANModels/4x_SpongeBob_235000_G.pth""", scale=4)
+	#clip = vsgan_device.run(clip=clip, chunk = False)
 	
 	
 	

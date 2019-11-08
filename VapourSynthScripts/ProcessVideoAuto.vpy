@@ -43,7 +43,7 @@ clip = mvs.Depth(clip, depth=16)
 
 #Temporal denoiser that runs on the GPU. Unlike NN denoisers, it can look at multiple frames for noise. 
 #h is the denoising strength, d sets the number of previous/next frames to look at (temporal noise), a is the search radius (spatial noise)
-#core.knlm.KNLMeansCL(clip, d=2, a=3, h=1.2)
+#clip = core.knlm.KNLMeansCL(clip, d=2, a=3, h=1.2)
 
 #Various Deblocking Functions
 #clip = haf.Deblock_QED(clip)
@@ -61,13 +61,16 @@ clip = mvs.Depth(clip, depth=16)
 #clip = muf.super_resolution(clip, **manual_sr_args)
 
 #VSRGAN (PyTorch) super resolution. It'll resample your clip to 8 bit RGB!
-#https://gitlab.com/imPRAGMA/VSGAN/wikis/Usage
-#clip = VSGAN.Start(clip=clip, model=r"""../ESRGANModels/ad_test_tf.pth""", scale=4, old_arch=False)
+#https://github.com/imPRAGMA/VSGAN/wiki
+#vsgan_device = VSGAN.VSGAN()
+#vsgan_device.load_model(model=r"""../ESRGANModels/ad_test_tf.pth""", scale=4)
+#clip = vsgan_device.run(clip=clip, chunk = False)
 
-#Interleave the source and processed clip for easy comparison.
+#Interleave the source and processed clip for easy comparison in VSEDIT's preview window.
 clip = mvs.Preview(clips=[core.text.Text(clip, "Processed"), core.text.Text(source, "Source")])
 
-#This is a very sharp downscaling filter, when shrinking output is necessary.
+#A sharp downscaling filter, when shrinking output is necessary.
+
 #clip = mvs.SSIM_downsample(clip, w = 640, h = 360) 
 
 #Change the bit depth and the video format for final output. You probably want to do this if encoding a video.
