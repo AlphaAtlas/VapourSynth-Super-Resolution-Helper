@@ -112,24 +112,26 @@ def get_gpu_vendor():
         input("Press ENTER to continue...")
         t[0] = True
     if "amd" in line.lower():
-        os.system('cls')
-        print("AMD graphics detected.")
-        print("MXNet upscaling will only run on the CPU, which is VERY slow.")
-        print("However, Waifu2X, GPU denoising and other OpenCL filters will work fine, even on AMD integrated graphics.")
-        print("If you just want to upscale videos with Waifu2X quickly, I recommend trying Dandere2x or Video2X:")
-        print("https://github.com/aka-katto/dandere2x")
-        print("https://github.com/k4yt3x/video2x")
-        print(" ")
-        input("Press ENTER to continue...")
+        if not t[0]:
+            os.system('cls')
+            print("AMD graphics detected.")
+            print("MXNet upscaling will only run on the CPU, which is VERY slow.")
+            print("However, Waifu2X, GPU denoising and other OpenCL filters will work fine, even on AMD integrated graphics.")
+            print("If you just want to upscale videos with Waifu2X quickly, I recommend trying Dandere2x or Video2X:")
+            print("https://github.com/aka-katto/dandere2x")
+            print("https://github.com/k4yt3x/video2x")
+            print(" ")
+            input("Press ENTER to continue...")
         t[1] = True
     if "intel" in line.lower():
-        os.system('cls')
-        print("Intel graphics detected.")
-        print("If you're on a laptop or an iMac-style all-in-one computer, you should force enable your main Nvidia/AMD graphics card.")
-        print("If you have no active dedicated graphics card, upscaling will be CPU only and VERY slow.")
-        print("OpenCL filters may or may not run on your IGP, depending on how new it is.")
-        print(" ")
-        input("Press ENTER to continue...")
+        if not t[0] or not t[1]:
+            os.system('cls')
+            print("Intel graphics detected.")
+            print("If you're on a laptop or an iMac-style all-in-one computer, you should force enable your main Nvidia/AMD graphics card.")
+            print("If you have no active dedicated graphics card, upscaling will be CPU only and VERY slow.")
+            print("OpenCL filters may or may not run on your IGP, depending on how new it is.")
+            print(" ")
+            input("Press ENTER to continue...")
         t[2] = True
     if t == [False, False, False]:
         raise Exception("Error finding active graphics card manufacturer!")

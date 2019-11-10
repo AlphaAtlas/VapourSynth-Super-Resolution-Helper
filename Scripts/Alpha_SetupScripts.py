@@ -15,6 +15,8 @@ cpumxmodule = "mxnet"
 
 torchstuff = ["torch===1.3.0+cpu", "torchvision===0.4.1+cpu", "-f", r"""https://download.pytorch.org/whl/torch_stable.html"""]
 
+ffurl = "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip"
+
 def install_mxnet_cpu():
     #Installs the appropriate version of mxnet with pip
     root = get_set_root()
@@ -40,15 +42,30 @@ def get_latest_release_github(url):
 def download_mx_plugin():
     #Downloads and moves kice's MXNet plugin. Automatically gets newest release. 
     root = get_set_root()
+    print("Downloading MXNet Plugin...")
+    print(" ")
     rurl = get_latest_release_github(mxurl)
     d = download(rurl)
     if os.path.isdir("MXNet"):
         shutil.rmtree("MXNet")
     with tempfile.TemporaryDirectory() as t:    
         zipfile.ZipFile(d).extractall(path=t)
-        mxfile = glob.glob(os.path.join(t + "/**/vs_mxnet.dll"), recursive=True)
+        mxfile = glob.glob(os.path.join(t, "/**/vs_mxnet.dll"), recursive=True)
         os.mkdir("MXNet")
         shutil.move(src=mxfile[0], dst="MXNet")
+
+def download_ffmpeg():
+    root = get_set_root()
+    ffmpegdir = os.path.join(root, "../bin/ffmpeg.exe")
+    if not os.path.isfile(ffmpegdir):
+        print("Downloading ffmpeg...")
+        print(" ")
+        d = download(ffurl)
+        zipexedir = os.path.join(root, "../bin/7za.exe")
+        with tempfile.TemporaryDirectory() as t:
+            subprocess.run([zipexedir, "x", d, "-o" + t], shell=True, check=True)
+            ffmpegfile = glob.glob(os.path.join(t, "/**/ffmpeg.exe"), recursive=True)
+            shutil.move(src=ffmpegfile[0], dst=ffmpegdir)
 
 def install_svn():
     #Downloads SVN, used for selectively pulling giant repos
@@ -94,6 +111,7 @@ if __name__ == "__main__":
         install_svn()
         install_neural_networks()
         download_mx_plugin()
+        download_ffmpeg()
         if not get_gpu_vendor()[0]:
             install_mxnet_cpu() #TODO: Get CPU version of MXNet working, or remove it. 
             install_vsgan_cpu()
