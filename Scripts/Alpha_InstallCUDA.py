@@ -82,8 +82,8 @@ def install_cuda(ujson, cudver = "10.1"):
     #Installs the appropriate version of CUDA silently
     #Might overwrite existing installs???
     cuda_strings = ["-s"]
-    for s in cuda_args:
-        cuda_strings.append("_" + cudver)
+    #for s in cuda_args:
+    #    cuda_strings.append("_" + s)
     cuurl = None
     if str(sys.getwindowsversion()) == '10':
         cuurl = ujson['CUDAWin10']

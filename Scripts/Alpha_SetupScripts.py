@@ -5,7 +5,7 @@ from Alpha_SharedFunctions import get_set_root, download, check_cuda, check_cudn
 
 mxurl = "https://api.github.com/repos/kice/vs_mxnet/releases/latest"
 
-pipmodules = ["pyperclip", "Pillow", "pySmartDL", "numpy", "opencv-python"]
+pipmodules = ["pyperclip", "Pillow", "pySmartDL", "numpy", "opencv-python", "onnxruntime", "block", "scipy"]
 
 modelurl = "https://github.com/WolframRhodium/Super-Resolution-Zoo/trunk"
 
