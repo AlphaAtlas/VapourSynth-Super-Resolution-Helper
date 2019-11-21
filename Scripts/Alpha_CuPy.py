@@ -1,5 +1,4 @@
 from string import Template
-
 import cupy as cp
 import vapoursynth as vs
 import muvsfunc_numpy as mufnp
@@ -62,4 +61,47 @@ def GPU_Downscale(src, width, height, _lambda = 1.0, fast = False):
         dpid_core, width=width, height=height, 
         kernelGuidance=kernelGuidance, kernelDownsampling=kernelDownsampling, 
         input_per_plane=False, output_per_plane=False, omit_first_clip=True)
-    
+
+#Ripped from https://github.com/WolframRhodium/muvsfunc/blob/master/Collections/examples/BilateralGPU_cupy/bilateral_gpu_cupy.vpy
+def GPU_Bilateral(src, sigmaS = 3.0, sigmaR = 0.02, sigma = 0):
+    half_kernel_size = round(sigmaS * 2)
+    blksize = (32, 8)
+    fast = False
+    snn = int(sigma > 0) # whether to use SNN sampling strategy
+
+    if src.format.id != vs.GRAYS:
+        raise vs.Error("Bilateral: Only 32-bit float grayscale is supported!")
+
+    w, h = src.width, src.height
+
+    # source code of CUDA kernel
+    with open(os.path.join(os.path.dirname(Path(__file__).resolve()),'bilateral.cu'), 'r') as f:
+        kernel_source_code = f.read()
+
+    kernel_source_code = Template(kernel_source_code)
+    kernel_source_code = kernel_source_code.substitute(
+        width=w, height=h, sigma_s=-0.5/(sigmaS**2), sigma_r=-0.5/(sigmaR**2), 
+        sigma=sigma, snn=snn, half_kernel_size=half_kernel_size)
+
+
+    if fast:
+        kernel = cp.RawKernel(kernel_source_code, 'bilateral', 
+            options=('--use_fast_math', ))
+    else:
+        kernel = cp.RawKernel(kernel_source_code, 'bilateral')
+
+    # create NumPy function
+    def bilateral_core(h_img, kernel):
+        # h_img must be a 2-D image
+
+        d_img = cp.asarray(h_img)
+        d_out = cp.empty_like(d_img)
+
+        kernel(((w + blksize[0] - 1)//blksize[0], (h + blksize[1] - 1)//blksize[1]), blksize, (d_img, d_out))
+
+        h_out = cp.asnumpy(d_out)
+
+        return h_out
+
+    # process
+    return mufnp.numpy_process(src, bilateral_core, kernel=kernel)
